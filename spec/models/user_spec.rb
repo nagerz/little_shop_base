@@ -131,17 +131,17 @@ RSpec.describe User, type: :model do
         o9 = create(:order, user: u1)
         o10 = create(:cancelled_order, user: u1)
 
-
-        oi1 = create(:fulfilled_order_item, item: i4, order: o1, quantity: 1, created_at: 200.days.ago, updated_at: 3.days.ago)
-        oi2 = create(:fulfilled_order_item, item: i2, order: o1, quantity: 1, created_at: 200.days.ago, updated_at: 3.days.ago)
-        oi3 = create(:fulfilled_order_item, item: i3, order: o1, quantity: 1, created_at: 200.days.ago, updated_at: 3.days.ago)
-        oi4 = create(:fulfilled_order_item, item: i3, order: o2, quantity: 1, created_at: 200.days.ago, updated_at: 3.days.ago)
-        oi5 = create(:fulfilled_order_item, item: i2, order: o2, quantity: 1, created_at: 200.days.ago, updated_at: 3.days.ago)
-        oi6 = create(:fulfilled_order_item, item: i4, order: o3, quantity: 1, created_at: 200.days.ago, updated_at: 3.days.ago)
-        oi7 = create(:fulfilled_order_item, item: i3, order: o4, quantity: 1, created_at: 200.days.ago, updated_at: 3.days.ago)
-        oi8 = create(:fulfilled_order_item, item: i1, order: o5, quantity: 1, created_at: 200.days.ago, updated_at: 3.days.ago)
-        oi9 = create(:fulfilled_order_item, item: i3, order: o6, quantity: 1, created_at: 200.days.ago, updated_at: 10.days.ago)
-        oi10 = create(:fulfilled_order_item, item: i5, order: o6, quantity: 1, created_at: 200.days.ago, updated_at: 10.days.ago)
+        #Order_items updated_at (fulfilled) current time (this month)
+        oi1 = create(:fulfilled_order_item, item: i4, order: o1, quantity: 1, created_at: 200.days.ago)
+        oi2 = create(:fulfilled_order_item, item: i2, order: o1, quantity: 1, created_at: 200.days.ago)
+        oi3 = create(:fulfilled_order_item, item: i3, order: o1, quantity: 1, created_at: 200.days.ago)
+        oi4 = create(:fulfilled_order_item, item: i3, order: o2, quantity: 1, created_at: 200.days.ago)
+        oi5 = create(:fulfilled_order_item, item: i2, order: o2, quantity: 1, created_at: 200.days.ago)
+        oi6 = create(:fulfilled_order_item, item: i4, order: o3, quantity: 1, created_at: 200.days.ago)
+        oi7 = create(:fulfilled_order_item, item: i3, order: o4, quantity: 1, created_at: 200.days.ago)
+        oi8 = create(:fulfilled_order_item, item: i1, order: o5, quantity: 1, created_at: 200.days.ago)
+        oi9 = create(:fulfilled_order_item, item: i3, order: o6, quantity: 1, created_at: 200.days.ago)
+        oi10 = create(:fulfilled_order_item, item: i5, order: o6, quantity: 1, created_at: 200.days.ago)
 
         #Sad path testing
         #Item not fulfilled this month
@@ -156,34 +156,35 @@ RSpec.describe User, type: :model do
         oi16 = create(:fulfilled_order_item, item: i1, order: o10, created_at: 200.days.ago, updated_at: 3.days.ago, quantity: 5)
         oi17 = create(:fulfilled_order_item, item: i1, order: o10, created_at: 200.days.ago, updated_at: 30.days.ago, quantity: 5)
 
-        oi18 = create(:fulfilled_order_item, item: i9, order: o1, quantity: 1, created_at: 200.days.ago, updated_at: 33.days.ago)
-        oi19 = create(:fulfilled_order_item, item: i7, order: o1, quantity: 1, created_at: 200.days.ago, updated_at: 33.days.ago)
-        oi20 = create(:fulfilled_order_item, item: i8, order: o1, quantity: 1, created_at: 200.days.ago, updated_at: 33.days.ago)
-        oi21 = create(:fulfilled_order_item, item: i8, order: o2, quantity: 1, created_at: 200.days.ago, updated_at: 33.days.ago)
-        oi22 = create(:fulfilled_order_item, item: i7, order: o2, quantity: 1, created_at: 200.days.ago, updated_at: 33.days.ago)
-        oi23 = create(:fulfilled_order_item, item: i9, order: o3, quantity: 1, created_at: 200.days.ago, updated_at: 33.days.ago)
-        oi24 = create(:fulfilled_order_item, item: i8, order: o4, quantity: 1, created_at: 200.days.ago, updated_at: 33.days.ago)
-        oi25 = create(:fulfilled_order_item, item: i6, order: o5, quantity: 1, created_at: 200.days.ago, updated_at: 33.days.ago)
-        oi26 = create(:fulfilled_order_item, item: i8, order: o6, quantity: 1, created_at: 200.days.ago, updated_at: 30.days.ago)
-        oi27 = create(:fulfilled_order_item, item: i10, order: o6, quantity: 1, created_at: 200.days.ago, updated_at: 30.days.ago)
+        #Order_items updated_at (fulfilled) 1 month ago (last month)
+        oi18 = create(:fulfilled_order_item, item: i9, order: o1, quantity: 1, created_at: 200.days.ago, updated_at: 1.month.ago)
+        oi19 = create(:fulfilled_order_item, item: i7, order: o1, quantity: 1, created_at: 200.days.ago, updated_at: 1.month.ago)
+        oi20 = create(:fulfilled_order_item, item: i8, order: o1, quantity: 1, created_at: 200.days.ago, updated_at: 1.month.ago)
+        oi21 = create(:fulfilled_order_item, item: i8, order: o2, quantity: 1, created_at: 200.days.ago, updated_at: 1.month.ago)
+        oi22 = create(:fulfilled_order_item, item: i7, order: o2, quantity: 1, created_at: 200.days.ago, updated_at: 1.month.ago)
+        oi23 = create(:fulfilled_order_item, item: i9, order: o3, quantity: 1, created_at: 200.days.ago, updated_at: 1.month.ago)
+        oi24 = create(:fulfilled_order_item, item: i8, order: o4, quantity: 1, created_at: 200.days.ago, updated_at: 1.month.ago)
+        oi25 = create(:fulfilled_order_item, item: i6, order: o5, quantity: 1, created_at: 200.days.ago, updated_at: 1.month.ago)
+        oi26 = create(:fulfilled_order_item, item: i8, order: o6, quantity: 1, created_at: 200.days.ago, updated_at: 1.month.ago)
+        oi27 = create(:fulfilled_order_item, item: i10, order: o6, quantity: 1, created_at: 200.days.ago, updated_at: 1.month.ago)
       end
 
       #Month = current month(default)
-      it ".merchants_sorted_by_month_items()" do
+      it ".merchants_sorted_by_month_items(current)" do
         expect(User.merchants_sorted_by_month_items).to eq([@m3, @m2, @m4, @m1, @m5])
       end
 
-      it ".top_merchants_by_month_items()" do
+      it ".top_3_merchants_by_month_items(current)" do
         expect(User.top_merchants_by_month_items(3)).to eq([@m3, @m2, @m4])
       end
 
       #Month = next month
-      it ".merchants_sorted_by_month_items()" do
-        expect(User.merchants_sorted_by_month_items(30.days.ago.month)).to eq([@m8, @m7, @m9, @m6, @m10])
+      it ".merchants_sorted_by_month_items(last)" do
+        expect(User.merchants_sorted_by_month_items(Time.now.month - 1)).to eq([@m8, @m7, @m9, @m6, @m10])
       end
 
-      it ".top_merchants_by_month_items()" do
-        expect(User.top_merchants_by_month_items(3)).to eq([@m3, @m2, @m4])
+      it ".top_3_merchants_by_month_items(last)" do
+        expect(User.top_merchants_by_month_items(3, Time.now.month - 1)).to eq([@m8, @m7, @m9])
       end
 
 

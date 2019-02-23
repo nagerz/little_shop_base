@@ -150,8 +150,8 @@ class User < ApplicationRecord
 
 
 
-  def self.top_merchants_by_month_items(limit)
-    merchants_sorted_by_month_items.limit(limit)
+  def self.top_merchants_by_month_items(limit, month = Time.now.month)
+    merchants_sorted_by_month_items(month).limit(limit)
   end
 
   def self.merchants_sorted_by_month_items(month = Time.now.month)
