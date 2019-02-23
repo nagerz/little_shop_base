@@ -221,18 +221,18 @@ RSpec.describe "merchant index workflow", type: :feature do
         oi9 = create(:fulfilled_order_item, item: i3, order: o6, quantity: 1, created_at: 200.days.ago)
         oi10 = create(:fulfilled_order_item, item: i5, order: o6, quantity: 1, created_at: 200.days.ago)
 
-        #Sad path testing
         #Item not fulfilled this month
-        oi11 = create(:fulfilled_order_item, item: i1, order: o7, created_at: 200.days.ago, updated_at: 60.days.ago, quantity: 5)
+        oi11 = create(:fulfilled_order_item, item: i1, order: o7, created_at: 200.days.ago, updated_at: 2.months.ago, quantity: 5)
+        oi34 = create(:fulfilled_order_item, item: i1, order: o7, created_at: 400.days.ago, updated_at: 1.year.ago, quantity: 5)
         #Item unfulfilled
-        oi12 = create(:order_item, item: i1, order: o8, created_at: 200.days.ago, updated_at: 3.days.ago, quantity: 5)
-        oi13 = create(:order_item, item: i1, order: o8, created_at: 200.days.ago, updated_at: 30.days.ago, quantity: 5)
+        oi12 = create(:order_item, item: i1, order: o8, created_at: 200.days.ago, quantity: 5)
+        oi13 = create(:order_item, item: i1, order: o8, created_at: 200.days.ago, updated_at: 1.month.ago, quantity: 5)
         #Order pending
-        oi14 = create(:fulfilled_order_item, item: i1, order: o9, created_at: 200.days.ago, updated_at: 3.days.ago, quantity: 5)
-        oi15 = create(:fulfilled_order_item, item: i1, order: o9, created_at: 200.days.ago, updated_at: 30.days.ago, quantity: 5)
+        oi14 = create(:fulfilled_order_item, item: i1, order: o9, created_at: 200.days.ago, quantity: 5)
+        oi15 = create(:fulfilled_order_item, item: i1, order: o9, created_at: 200.days.ago, updated_at: 1.month.ago, quantity: 5)
         #Order cancelled
-        oi16 = create(:fulfilled_order_item, item: i1, order: o10, created_at: 200.days.ago, updated_at: 3.days.ago, quantity: 5)
-        oi17 = create(:fulfilled_order_item, item: i1, order: o10, created_at: 200.days.ago, updated_at: 30.days.ago, quantity: 5)
+        oi16 = create(:fulfilled_order_item, item: i1, order: o10, created_at: 200.days.ago, quantity: 5)
+        oi17 = create(:fulfilled_order_item, item: i1, order: o10, created_at: 200.days.ago, updated_at: 1.month.ago, quantity: 5)
 
         #Order_items updated_at (fulfilled) 1 month ago (last month)
         oi18 = create(:fulfilled_order_item, item: i9, order: o1, quantity: 1, created_at: 200.days.ago, updated_at: 1.month.ago)
