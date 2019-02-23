@@ -25,6 +25,34 @@
         <% end %>
       </ul>
     <% end %>
+    <%= tag.section id: "top-ten-merchants-this-month", class: "card-body float-left m-2" do %>
+      <h5 class="card-title">Top Merchants by Items This Month</h5>
+      <% if !@top_ten_merchants_by_items_this_month.empty? %>
+        <ul>
+          <% @top_ten_merchants_by_items_this_month.each do |merchant| %>
+            <li><%= link_to merchant.name, merchant_path(merchant) %>: <%= pluralize(merchant.total_month_items, 'Item') %></li>
+          <% end %>
+        </ul>
+      <% else %>
+        <ul>
+          <li>N/A</li>
+        </ul>
+      <% end %>
+    <% end %>
+    <%= tag.section id: "top-ten-merchants-last-month", class: "card-body float-left m-2" do %>
+      <h5 class="card-title">Top Merchants by Items Last Month</h5>
+      <% if !@top_ten_merchants_by_items_last_month.empty? %>
+        <ul>
+          <% @top_ten_merchants_by_items_last_month.each do |merchant| %>
+            <li><%= link_to merchant.name, merchant_path(merchant) %>: <%= pluralize(merchant.total_month_items, 'Item') %></li>
+          <% end %>
+        </ul>
+      <% else %>
+        <ul>
+          <li>N/A</li>
+        </ul>
+      <% end %>
+    <% end %>
     <%= tag.section id: "top-states-by-order", class: "card-body float-left m-2" do %>
       <h5 class="card-title">Top States by Order</h5>
       <ul>

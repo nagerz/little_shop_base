@@ -98,7 +98,7 @@ RSpec.describe "merchant index workflow", type: :feature do
         u4 = create(:user, state: "IA", city: "Des Moines")
         u5 = create(:user, state: "IA", city: "Des Moines")
         u6 = create(:user, state: "IA", city: "Des Moines")
-        @m1, @m2, @m3, @m4, @m5, @m6, @m7 = create_list(:merchant, 7)
+        @m1, @m2, @m3, @m4, @m5, @m6, @m7 = create_list(:merchant,7)
         i1 = create(:item, merchant_id: @m1.id)
         i2 = create(:item, merchant_id: @m2.id)
         i3 = create(:item, merchant_id: @m3.id)
@@ -183,6 +183,108 @@ RSpec.describe "merchant index workflow", type: :feature do
           expect(page).to have_content("Order #{@o3.id}: 8 items")
         end
       end
+    end
+
+    describe "shows advanced merchant statistics" do
+      before :each do
+        u1 = create(:user)
+        @m1, @m2, @m3, @m4, @m5, @m6, @m7, @m8, @m9, @m10, @m11, @m12, @m13, @m14, @m15, @m16 = create_list(:merchant, 16)
+        i1 = create(:item, merchant_id: @m1.id)
+        i2 = create(:item, merchant_id: @m2.id)
+        i3 = create(:item, merchant_id: @m3.id)
+        i4 = create(:item, merchant_id: @m4.id)
+        i5 = create(:item, merchant_id: @m5.id)
+        i6 = create(:item, merchant_id: @m6.id)
+        i7 = create(:item, merchant_id: @m7.id)
+        i8 = create(:item, merchant_id: @m8.id)
+        i9 = create(:item, merchant_id: @m9.id)
+        i10 = create(:item, merchant_id: @m10.id)
+        i11 = create(:item, merchant_id: @m11.id)
+        i12 = create(:item, merchant_id: @m12.id)
+        i13 = create(:item, merchant_id: @m13.id)
+        i14 = create(:item, merchant_id: @m14.id)
+        i15 = create(:item, merchant_id: @m15.id)
+        i16 = create(:item, merchant_id: @m16.id)
+        o1, o2, o3, o4, o5, o6 , o7, o8 = create_list(:completed_order, 8, user: u1)
+        o9 = create(:order, user: u1)
+        o10 = create(:cancelled_order, user: u1)
+
+        #Order_items updated_at (fulfilled) current time (this month)
+        oi1 = create(:fulfilled_order_item, item: i4, order: o1, quantity: 1, created_at: 200.days.ago)
+        oi2 = create(:fulfilled_order_item, item: i2, order: o1, quantity: 1, created_at: 200.days.ago)
+        oi3 = create(:fulfilled_order_item, item: i3, order: o1, quantity: 1, created_at: 200.days.ago)
+        oi4 = create(:fulfilled_order_item, item: i3, order: o2, quantity: 1, created_at: 200.days.ago)
+        oi5 = create(:fulfilled_order_item, item: i2, order: o2, quantity: 1, created_at: 200.days.ago)
+        oi6 = create(:fulfilled_order_item, item: i4, order: o3, quantity: 1, created_at: 200.days.ago)
+        oi7 = create(:fulfilled_order_item, item: i3, order: o4, quantity: 1, created_at: 200.days.ago)
+        oi8 = create(:fulfilled_order_item, item: i1, order: o5, quantity: 1, created_at: 200.days.ago)
+        oi9 = create(:fulfilled_order_item, item: i3, order: o6, quantity: 1, created_at: 200.days.ago)
+        oi10 = create(:fulfilled_order_item, item: i5, order: o6, quantity: 1, created_at: 200.days.ago)
+
+        #Sad path testing
+        #Item not fulfilled this month
+        oi11 = create(:fulfilled_order_item, item: i1, order: o7, created_at: 200.days.ago, updated_at: 60.days.ago, quantity: 5)
+        #Item unfulfilled
+        oi12 = create(:order_item, item: i1, order: o8, created_at: 200.days.ago, updated_at: 3.days.ago, quantity: 5)
+        oi13 = create(:order_item, item: i1, order: o8, created_at: 200.days.ago, updated_at: 30.days.ago, quantity: 5)
+        #Order pending
+        oi14 = create(:fulfilled_order_item, item: i1, order: o9, created_at: 200.days.ago, updated_at: 3.days.ago, quantity: 5)
+        oi15 = create(:fulfilled_order_item, item: i1, order: o9, created_at: 200.days.ago, updated_at: 30.days.ago, quantity: 5)
+        #Order cancelled
+        oi16 = create(:fulfilled_order_item, item: i1, order: o10, created_at: 200.days.ago, updated_at: 3.days.ago, quantity: 5)
+        oi17 = create(:fulfilled_order_item, item: i1, order: o10, created_at: 200.days.ago, updated_at: 30.days.ago, quantity: 5)
+
+        #Order_items updated_at (fulfilled) 1 month ago (last month)
+        oi18 = create(:fulfilled_order_item, item: i9, order: o1, quantity: 1, created_at: 200.days.ago, updated_at: 1.month.ago)
+        oi19 = create(:fulfilled_order_item, item: i7, order: o1, quantity: 1, created_at: 200.days.ago, updated_at: 1.month.ago)
+        oi20 = create(:fulfilled_order_item, item: i8, order: o1, quantity: 1, created_at: 200.days.ago, updated_at: 1.month.ago)
+        oi21 = create(:fulfilled_order_item, item: i8, order: o2, quantity: 1, created_at: 200.days.ago, updated_at: 1.month.ago)
+        oi22 = create(:fulfilled_order_item, item: i7, order: o2, quantity: 1, created_at: 200.days.ago, updated_at: 1.month.ago)
+        oi23 = create(:fulfilled_order_item, item: i9, order: o3, quantity: 1, created_at: 200.days.ago, updated_at: 1.month.ago)
+        oi24 = create(:fulfilled_order_item, item: i8, order: o4, quantity: 1, created_at: 200.days.ago, updated_at: 1.month.ago)
+        oi25 = create(:fulfilled_order_item, item: i6, order: o5, quantity: 1, created_at: 200.days.ago, updated_at: 1.month.ago)
+        oi26 = create(:fulfilled_order_item, item: i8, order: o6, quantity: 1, created_at: 200.days.ago, updated_at: 1.month.ago)
+        oi27 = create(:fulfilled_order_item, item: i10, order: o6, quantity: 1, created_at: 200.days.ago, updated_at: 1.month.ago)
+
+        oi28 = create(:fulfilled_order_item, item: i11, order: o6, quantity: 1, created_at: 200.days.ago, updated_at: 1.month.ago)
+        oi29 = create(:fulfilled_order_item, item: i12, order: o6, quantity: 1, created_at: 200.days.ago, updated_at: 1.month.ago)
+        oi30 = create(:fulfilled_order_item, item: i13, order: o6, quantity: 1, created_at: 200.days.ago, updated_at: 1.month.ago)
+        oi31 = create(:fulfilled_order_item, item: i14, order: o6, quantity: 1, created_at: 200.days.ago, updated_at: 1.month.ago)
+        oi32 = create(:fulfilled_order_item, item: i15, order: o6, quantity: 1, created_at: 200.days.ago, updated_at: 1.month.ago)
+        oi33 = create(:fulfilled_order_item, item: i16, order: o6, quantity: 1, created_at: 200.days.ago, updated_at: 1.month.ago)
+
+
+      end
+
+      it "top 10 merchants by month items, this month" do
+        visit merchants_path
+
+        within("#top-ten-merchants-this-month") do
+          expect(page).to have_content("#{@m3.name}: 4 Items")
+          expect(page).to have_content("#{@m2.name}: 2 Items")
+          expect(page).to have_content("#{@m4.name}: 2 Items")
+          expect(page).to have_content("#{@m1.name}: 1 Item")
+          expect(page).to have_content("#{@m5.name}: 1 Item")
+        end
+      end
+
+      it "top 10 merchants by month items, last month" do
+        visit merchants_path
+
+        within("#top-ten-merchants-last-month") do
+          expect(page).to have_content("#{@m8.name}: 4 Items")
+          expect(page).to have_content("#{@m9.name}: 2 Items")
+          expect(page).to have_content("#{@m7.name}: 2 Items")
+          expect(page).to have_content("#{@m6.name}: 1 Item")
+          expect(page).to have_content("#{@m10.name}: 1 Item")
+          expect(page).to have_content("#{@m12.name}: 1 Item")
+          expect(page).to have_content("#{@m13.name}: 1 Item")
+          expect(page).to have_content("#{@m14.name}: 1 Item")
+          expect(page).to have_content("#{@m15.name}: 1 Item")
+          expect(page).to have_content("#{@m16.name}: 1 Item")
+        end
+      end
+
     end
   end
 end
