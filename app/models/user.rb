@@ -154,12 +154,29 @@ class User < ApplicationRecord
     merchants_sorted_by_month_items(month).limit(limit)
   end
 
+  def self.top_merchants_by_fulfilled_orders(limit, month = Time.now.month)
+    merchants_sorted_by_fulfilled_orders(month).limit(limit)
+  end
+
   def self.merchants_sorted_by_month_items(month = Time.now.month)
     self.joins(:items)
         .joins('join order_items on items.id = order_items.item_id')
         .joins('join orders on orders.id = order_items.order_id')
         .select('users.*, sum(order_items.quantity) AS total_month_items')
         .where('orders.status = 1')
+        .where('order_items.fulfilled = true')
+        .where('EXTRACT(YEAR FROM order_items.updated_at) = ?', Time.now.year)
+        .where('EXTRACT(MONTH FROM order_items.updated_at) = ?', month)
+        .group(:id)
+        .order('total_month_items DESC')
+  end
+
+  def self.merchants_sorted_by_fulfilled_orders(month = Time.now.month)
+    self.joins(:items)
+        .joins('join order_items on items.id = order_items.item_id')
+        .joins('join orders on orders.id = order_items.order_id')
+        .select('users.*, sum(order_items.quantity) AS total_month_items')
+        .where.not('orders.status = 2')
         .where('order_items.fulfilled = true')
         .where('EXTRACT(YEAR FROM order_items.updated_at) = ?', Time.now.year)
         .where('EXTRACT(MONTH FROM order_items.updated_at) = ?', month)

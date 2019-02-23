@@ -183,6 +183,10 @@ RSpec.describe User, type: :model do
         expect(User.merchants_sorted_by_fulfilled_orders).to eq([@m11, @m3, @m2, @m4, @m1, @m5])
       end
 
+      it ".top_3_merchants_by_fulfilled_orders(current)" do
+        expect(User.top_merchants_by_fulfilled_orders(3)).to eq([@m11, @m3, @m2])
+      end
+
       #Month = next month
       it ".merchants_sorted_by_month_items(last)" do
         expect(User.merchants_sorted_by_month_items(Time.now.month - 1)).to eq([@m8, @m7, @m9, @m6, @m10])
@@ -190,6 +194,14 @@ RSpec.describe User, type: :model do
 
       it ".top_3_merchants_by_month_items(last)" do
         expect(User.top_merchants_by_month_items(3, Time.now.month - 1)).to eq([@m8, @m7, @m9])
+      end
+
+      it ".merchants_sorted_by_fulfilled_orders(last)" do
+        expect(User.merchants_sorted_by_fulfilled_orders(Time.now.month - 1)).to eq([@m11, @m8, @m7, @m9, @m6, @m10])
+      end
+
+      it ".top_3_merchants_by_fulfilled_orders(last)" do
+        expect(User.top_merchants_by_fulfilled_orders(3, Time.now.month - 1)).to eq([@m11, @m8, @m7])
       end
 
 
