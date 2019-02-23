@@ -130,6 +130,7 @@ RSpec.describe User, type: :model do
         o1, o2, o3, o4, o5, o6 , o7, o8 = create_list(:completed_order, 8, user: u1)
         o9 = create(:order, user: u1)
         o10 = create(:cancelled_order, user: u1)
+        o11 = create(:order, user: u1)
 
         #Order_items updated_at (fulfilled) current time (this month)
         oi1 = create(:fulfilled_order_item, item: i4, order: o1, quantity: 1, created_at: 200.days.ago)
@@ -143,9 +144,9 @@ RSpec.describe User, type: :model do
         oi9 = create(:fulfilled_order_item, item: i3, order: o6, quantity: 1, created_at: 200.days.ago)
         oi10 = create(:fulfilled_order_item, item: i5, order: o6, quantity: 1, created_at: 200.days.ago)
 
-        #Sad path testing
-        #Item not fulfilled this month
-        oi11 = create(:fulfilled_order_item, item: i1, order: o7, created_at: 200.days.ago, updated_at: 60.days.ago, quantity: 5)
+        #Item not fulfilled this or last month
+        oi11 = create(:fulfilled_order_item, item: i1, order: o7, created_at: 200.days.ago, updated_at: 70.days.ago, quantity: 5)
+        oi28 = create(:fulfilled_order_item, item: i1, order: o7, created_at: 400.days.ago, updated_at: 1.year.ago, quantity: 5)
         #Item unfulfilled
         oi12 = create(:order_item, item: i1, order: o8, created_at: 200.days.ago, updated_at: 3.days.ago, quantity: 5)
         oi13 = create(:order_item, item: i1, order: o8, created_at: 200.days.ago, updated_at: 30.days.ago, quantity: 5)

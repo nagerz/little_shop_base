@@ -161,6 +161,7 @@ class User < ApplicationRecord
         .select('users.*, sum(order_items.quantity) AS total_month_items')
         .where('orders.status = 1')
         .where('order_items.fulfilled = true')
+        .where('EXTRACT(YEAR FROM order_items.updated_at) = ?', Time.now.year)
         .where('EXTRACT(MONTH FROM order_items.updated_at) = ?', month)
         .group(:id)
         .order('total_month_items DESC')
