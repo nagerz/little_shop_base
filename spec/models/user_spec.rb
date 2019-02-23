@@ -116,7 +116,7 @@ RSpec.describe User, type: :model do
     describe "advanced-statistics" do
       before :each do
         u1 = create(:user)
-        @m1, @m2, @m3, @m4, @m5, @m6, @m7, @m8, @m9, @m10 = create_list(:merchant, 10)
+        @m1, @m2, @m3, @m4, @m5, @m6, @m7, @m8, @m9, @m10, @m11 = create_list(:merchant, 11)
         i1 = create(:item, merchant_id: @m1.id)
         i2 = create(:item, merchant_id: @m2.id)
         i3 = create(:item, merchant_id: @m3.id)
@@ -127,10 +127,10 @@ RSpec.describe User, type: :model do
         i8 = create(:item, merchant_id: @m8.id)
         i9 = create(:item, merchant_id: @m9.id)
         i10 = create(:item, merchant_id: @m10.id)
+        i11 = create(:item, merchant_id: @m11.id)
         o1, o2, o3, o4, o5, o6 , o7, o8 = create_list(:completed_order, 8, user: u1)
         o9 = create(:order, user: u1)
         o10 = create(:cancelled_order, user: u1)
-        o11 = create(:order, user: u1)
 
         #Order_items updated_at (fulfilled) current time (this month)
         oi1 = create(:fulfilled_order_item, item: i4, order: o1, quantity: 1, created_at: 200.days.ago)
@@ -151,8 +151,8 @@ RSpec.describe User, type: :model do
         oi12 = create(:order_item, item: i1, order: o8, created_at: 200.days.ago, quantity: 5)
         oi13 = create(:order_item, item: i1, order: o8, created_at: 200.days.ago, updated_at: 1.month.ago, quantity: 5)
         #Order pending
-        oi14 = create(:fulfilled_order_item, item: i1, order: o9, created_at: 200.days.ago, quantity: 5)
-        oi15 = create(:fulfilled_order_item, item: i1, order: o9, created_at: 200.days.ago, updated_at: 1.month.ago, quantity: 5)
+        oi14 = create(:fulfilled_order_item, item: i11, order: o9, created_at: 200.days.ago, quantity: 5)
+        oi15 = create(:fulfilled_order_item, item: i11, order: o9, created_at: 200.days.ago, updated_at: 1.month.ago, quantity: 5)
         #Order cancelled
         oi16 = create(:fulfilled_order_item, item: i1, order: o10, created_at: 200.days.ago, quantity: 5)
         oi17 = create(:fulfilled_order_item, item: i1, order: o10, created_at: 200.days.ago, updated_at: 1.month.ago, quantity: 5)
@@ -177,6 +177,10 @@ RSpec.describe User, type: :model do
 
       it ".top_3_merchants_by_month_items(current)" do
         expect(User.top_merchants_by_month_items(3)).to eq([@m3, @m2, @m4])
+      end
+
+      it ".merchants_sorted_by_fulfilled_orders(current)" do
+        expect(User.merchants_sorted_by_fulfilled_orders).to eq([@m11, @m3, @m2, @m4, @m1, @m5])
       end
 
       #Month = next month
