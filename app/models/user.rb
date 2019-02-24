@@ -158,6 +158,10 @@ class User < ApplicationRecord
     merchants_sorted_by_fulfilled_orders(month).limit(limit)
   end
 
+  def self.top_merchants_by_fulfilled_orders_fastest_state(user, limit)
+    merchants_sorted_by_fulfilled_orders_fastest_state(user).limit(limit)
+  end
+
   def self.merchants_sorted_by_month_items(month = Time.now.month)
     self.joins(:items)
         .joins('join order_items on items.id = order_items.item_id')
@@ -182,6 +186,20 @@ class User < ApplicationRecord
         .where('EXTRACT(MONTH FROM order_items.updated_at) = ?', month)
         .group(:id)
         .order('total_month_items DESC')
+  end
+
+  def self.merchants_sorted_by_fulfilled_orders_fastest_state(user)
+    state = user.state
+    state_orders = Order.joins(:user).where('users.state = ?', state).select('orders.*').pluck(:id)
+    self.joins(:items)
+        .joins('join order_items on items.id = order_items.item_id')
+        .joins('join orders on orders.id = order_items.order_id')
+        .select('users.*, avg(order_items.updated_at - order_items.created_at) AS avg_fulfillment_time')
+        .where.not('orders.status = 2')
+        .where('orders.id in (?)', state_orders)
+        .where('order_items.fulfilled = true')
+        .group(:id)
+        .order('avg_fulfillment_time ASC')
   end
 
 
