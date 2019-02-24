@@ -162,6 +162,10 @@ class User < ApplicationRecord
     merchants_sorted_by_fulfilled_orders_fastest_state(user).limit(limit)
   end
 
+  def self.top_merchants_by_fulfilled_orders_fastest_city(user, limit)
+    merchants_sorted_by_fulfilled_orders_fastest_city(user).limit(limit)
+  end
+
   def self.merchants_sorted_by_month_items(month = Time.now.month)
     self.joins(:items)
         .joins('join order_items on items.id = order_items.item_id')
@@ -179,18 +183,34 @@ class User < ApplicationRecord
     self.joins(:items)
         .joins('join order_items on items.id = order_items.item_id')
         .joins('join orders on orders.id = order_items.order_id')
-        .select('users.*, sum(order_items.quantity) AS total_month_items')
+        .select('users.*, sum(order_items.quantity * order_items.price) AS total_revenue')
         .where.not('orders.status = 2')
         .where('order_items.fulfilled = true')
         .where('EXTRACT(YEAR FROM order_items.updated_at) = ?', Time.now.year)
         .where('EXTRACT(MONTH FROM order_items.updated_at) = ?', month)
         .group(:id)
-        .order('total_month_items DESC')
+        .order('total_revenue DESC')
   end
 
   def self.merchants_sorted_by_fulfilled_orders_fastest_state(user)
     state = user.state
     state_orders = Order.joins(:user).where('users.state = ?', state).select('orders.*').pluck(:id)
+    self.joins(:items)
+        .joins('join order_items on items.id = order_items.item_id')
+        .joins('join orders on orders.id = order_items.order_id')
+        .select('users.*, avg(order_items.updated_at - order_items.created_at) AS avg_fulfillment_time')
+        .where.not('orders.status = 2')
+        .where('orders.id in (?)', state_orders)
+        .where('order_items.fulfilled = true')
+        .group(:id)
+        .order('avg_fulfillment_time ASC')
+  end
+
+  def self.merchants_sorted_by_fulfilled_orders_fastest_city(user)
+    state = user.state
+    city = user.city
+    state_orders = Order.joins(:user).where('users.state = ? and users.city = ?', state, city).select('orders.*').pluck(:id)
+
     self.joins(:items)
         .joins('join order_items on items.id = order_items.item_id')
         .joins('join orders on orders.id = order_items.order_id')

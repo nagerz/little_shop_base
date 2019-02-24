@@ -25,7 +25,7 @@
         <% end %>
       </ul>
     <% end %>
-    <%= tag.section id: "top-ten-merchants-this-month", class: "card-body float-left m-2" do %>
+    <%= tag.section id: "top-ten-merchants-items-this-month", class: "card-body float-left m-2" do %>
       <h5 class="card-title">Top Merchants by Items This Month</h5>
       <% if !@top_ten_merchants_by_items_this_month.empty? %>
         <ul>
@@ -39,7 +39,7 @@
         </ul>
       <% end %>
     <% end %>
-    <%= tag.section id: "top-ten-merchants-last-month", class: "card-body float-left m-2" do %>
+    <%= tag.section id: "top-ten-merchants-items-last-month", class: "card-body float-left m-2" do %>
       <h5 class="card-title">Top Merchants by Items Last Month</h5>
       <% if !@top_ten_merchants_by_items_last_month.empty? %>
         <ul>

@@ -211,9 +211,10 @@ RSpec.describe "merchant index workflow", type: :feature do
         o1, o2, o3, o4, o5, o6 , o7, o8 = create_list(:completed_order, 8, user: u1)
         o9 = create(:order, user: u1)
         o10 = create(:cancelled_order, user: u1)
-        o11 = create(:completed_order, user: u2)
-        o12 = create(:completed_order, user: u3)
-        o13 = create(:order, user: u4)
+        o11 = create(:order, user: u2)
+        o12 = create(:completed_order, user: u2)
+        o13 = create(:completed_order, user: u3)
+        o14 = create(:completed_order, user: u4)
 
 
         #Order_items updated_at (fulfilled) current time (this month)
@@ -254,11 +255,11 @@ RSpec.describe "merchant index workflow", type: :feature do
         oi27 = create(:fulfilled_order_item, item: i10, order: o6, quantity: 1, created_at: 200.days.ago, updated_at: 1.month.ago)
 
         oi28 = create(:fulfilled_order_item, item: i11, order: o11, quantity: 1, created_at: 220.days.ago, updated_at: 1.month.ago)
-        oi29 = create(:fulfilled_order_item, item: i12, order: o11, quantity: 1, created_at: 220.days.ago, updated_at: 1.month.ago)
-        oi30 = create(:fulfilled_order_item, item: i13, order: o12, quantity: 1, created_at: 210.days.ago, updated_at: 1.month.ago)
-        oi31 = create(:fulfilled_order_item, item: i14, order: o12, quantity: 1, created_at: 210.days.ago, updated_at: 1.month.ago)
-        oi32 = create(:fulfilled_order_item, item: i15, order: o13, quantity: 1, created_at: 200.days.ago, updated_at: 1.month.ago)
-        oi33 = create(:fulfilled_order_item, item: i16, order: o13, quantity: 1, created_at: 200.days.ago, updated_at: 1.month.ago)
+        oi29 = create(:fulfilled_order_item, item: i12, order: o12, quantity: 1, created_at: 220.days.ago, updated_at: 1.month.ago)
+        oi30 = create(:fulfilled_order_item, item: i13, order: o13, quantity: 1, created_at: 210.days.ago, updated_at: 1.month.ago)
+        oi31 = create(:fulfilled_order_item, item: i14, order: o13, quantity: 1, created_at: 210.days.ago, updated_at: 1.month.ago)
+        oi32 = create(:fulfilled_order_item, item: i15, order: o14, quantity: 1, created_at: 200.days.ago, updated_at: 1.month.ago)
+        oi33 = create(:fulfilled_order_item, item: i16, order: o14, quantity: 1, created_at: 200.days.ago, updated_at: 1.month.ago)
       end
 
       it "top 10 merchants by month items, this month" do
