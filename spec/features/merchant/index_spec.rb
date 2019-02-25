@@ -188,9 +188,9 @@ RSpec.describe "merchant index workflow", type: :feature do
     describe "shows advanced merchant statistics" do
       before :each do
         u1 = create(:user, state: "CO", city: "Fairfield")
-        u2 = create(:user, state: "IA", city: "Fairfield")
+        @u2 = create(:user, state: "IA", city: "Fairfield")
         u3 = create(:user, state: "OK", city: "OKC")
-        u4 = create(:user, state: "IA", city: "Des Moines")
+        @u4 = create(:user, state: "IA", city: "Des Moines")
         @m1, @m2, @m3, @m4, @m5, @m6, @m7, @m8, @m9, @m10, @m11, @m12, @m13, @m14, @m15, @m16 = create_list(:merchant, 16)
         i1 = create(:item, merchant_id: @m1.id)
         i2 = create(:item, merchant_id: @m2.id)
@@ -211,10 +211,10 @@ RSpec.describe "merchant index workflow", type: :feature do
         o1, o2, o3, o4, o5, o6 , o7, o8 = create_list(:completed_order, 8, user: u1)
         o9 = create(:order, user: u1)
         o10 = create(:cancelled_order, user: u1)
-        o11 = create(:order, user: u2)
-        o12 = create(:completed_order, user: u2)
+        o11 = create(:order, user: @u2)
+        o12 = create(:completed_order, user: @u2)
         o13 = create(:completed_order, user: u3)
-        o14 = create(:completed_order, user: u4)
+        o14 = create(:completed_order, user: @u4)
 
 
         #Order_items updated_at (fulfilled) current time (this month)
@@ -231,7 +231,7 @@ RSpec.describe "merchant index workflow", type: :feature do
 
         #Item not fulfilled this month
         oi11 = create(:fulfilled_order_item, item: i1, order: o7, created_at: 200.days.ago, updated_at: 2.months.ago, quantity: 5)
-        oi34 = create(:fulfilled_order_item, item: i1, order: o7, created_at: 400.days.ago, updated_at: 1.year.ago, quantity: 5)
+        oi50 = create(:fulfilled_order_item, item: i1, order: o7, created_at: 400.days.ago, updated_at: 1.year.ago, quantity: 5)
         #Item unfulfilled
         oi12 = create(:order_item, item: i1, order: o8, created_at: 200.days.ago, quantity: 5)
         oi13 = create(:order_item, item: i1, order: o8, created_at: 200.days.ago, updated_at: 1.month.ago, quantity: 5)
@@ -254,12 +254,19 @@ RSpec.describe "merchant index workflow", type: :feature do
         oi26 = create(:fulfilled_order_item, item: i8, order: o6, quantity: 1, created_at: 200.days.ago, updated_at: 1.month.ago)
         oi27 = create(:fulfilled_order_item, item: i10, order: o6, quantity: 1, created_at: 200.days.ago, updated_at: 1.month.ago)
 
-        oi28 = create(:fulfilled_order_item, item: i11, order: o11, quantity: 1, created_at: 220.days.ago, updated_at: 1.month.ago)
+        oi28 = create(:fulfilled_order_item, item: i11, order: o11, quantity: 1, created_at: 221.days.ago, updated_at: 1.month.ago)
         oi29 = create(:fulfilled_order_item, item: i12, order: o12, quantity: 1, created_at: 220.days.ago, updated_at: 1.month.ago)
-        oi30 = create(:fulfilled_order_item, item: i13, order: o13, quantity: 1, created_at: 210.days.ago, updated_at: 1.month.ago)
+        oi30 = create(:fulfilled_order_item, item: i13, order: o13, quantity: 1, created_at: 211.days.ago, updated_at: 1.month.ago)
         oi31 = create(:fulfilled_order_item, item: i14, order: o13, quantity: 1, created_at: 210.days.ago, updated_at: 1.month.ago)
-        oi32 = create(:fulfilled_order_item, item: i15, order: o14, quantity: 1, created_at: 200.days.ago, updated_at: 1.month.ago)
-        oi33 = create(:fulfilled_order_item, item: i16, order: o14, quantity: 1, created_at: 200.days.ago, updated_at: 1.month.ago)
+        oi32 = create(:fulfilled_order_item, item: i15, order: o14, quantity: 1, created_at: 203.days.ago, updated_at: 1.month.ago)
+        oi33 = create(:fulfilled_order_item, item: i16, order: o14, quantity: 1, created_at: 202.days.ago, updated_at: 1.month.ago)
+
+        oi34 = create(:fulfilled_order_item, item: i1, order: o11, quantity: 1, price: 1, created_at: 201.days.ago, updated_at: 3.months.ago)
+        oi35 = create(:fulfilled_order_item, item: i2, order: o11, quantity: 1, price: 1, created_at: 200.days.ago, updated_at: 3.months.ago)
+        oi35 = create(:fulfilled_order_item, item: i3, order: o14, quantity: 1, price: 1, created_at: 300.days.ago, updated_at: 3.months.ago)
+        oi35 = create(:fulfilled_order_item, item: i4, order: o14, quantity: 1, price: 1, created_at: 301.days.ago, updated_at: 3.months.ago)
+        oi35 = create(:fulfilled_order_item, item: i5, order: o14, quantity: 1, price: 1, created_at: 302.days.ago, updated_at: 3.months.ago)
+        oi35 = create(:fulfilled_order_item, item: i6, order: o14, quantity: 1, price: 1, created_at: 303.days.ago, updated_at: 3.months.ago)
       end
 
       it "top 10 merchants by month items, this month" do
@@ -295,12 +302,12 @@ RSpec.describe "merchant index workflow", type: :feature do
         visit merchants_path
 
         within("#top-ten-merchants-noncancelled-this-month") do
-          expect(page).to have_content("#{@m11.name}: 5 Items")
-          expect(page).to have_content("#{@m3.name}: 4 Items")
-          expect(page).to have_content("#{@m2.name}: 2 Items")
-          expect(page).to have_content("#{@m4.name}: 2 Items")
-          expect(page).to have_content("#{@m1.name}: 1 Item")
-          expect(page).to have_content("#{@m5.name}: 1 Item")
+          expect(page).to have_content("#{@m11.name}: $120.00 Fulfilled Value")
+          expect(page).to have_content("#{@m3.name}: $40.50 Fulfilled Value")
+          expect(page).to have_content("#{@m5.name}: $16.50 Fulfilled Value")
+          expect(page).to have_content("#{@m1.name}: $13.50 Fulfilled Value")
+          expect(page).to have_content("#{@m2.name}: $13.50 Fulfilled Value")
+          expect(page).to have_content("#{@m4.name}: $13.50 Fulfilled Value")
         end
       end
 
@@ -308,16 +315,52 @@ RSpec.describe "merchant index workflow", type: :feature do
         visit merchants_path
 
         within("#top-ten-merchants-noncancelled-last-month") do
-          expect(page).to have_content("#{@m11.name}: 5 Items")
-          expect(page).to have_content("#{@m8.name}: 4 Items")
-          expect(page).to have_content("#{@m9.name}: 2 Items")
-          expect(page).to have_content("#{@m7.name}: 2 Items")
-          expect(page).to have_content("#{@m6.name}: 1 Item")
-          expect(page).to have_content("#{@m10.name}: 1 Item")
-          expect(page).to have_content("#{@m12.name}: 1 Item")
-          expect(page).to have_content("#{@m13.name}: 1 Item")
-          expect(page).to have_content("#{@m14.name}: 1 Item")
-          expect(page).to have_content("#{@m15.name}: 1 Item")
+          expect(page).to have_content("#{@m11.name}: $172.50 Fulfilled Value")
+          expect(page).to have_content("#{@m8.name}: $148.50 Fulfilled Value")
+          expect(page).to have_content("#{@m7.name}: $67.50 Fulfilled Value")
+          expect(page).to have_content("#{@m9.name}: $67.50 Fulfilled Value")
+          expect(page).to have_content("#{@m16.name}: $52.50 Fulfilled Value")
+          expect(page).to have_content("#{@m15.name}: $51.00 Fulfilled Value")
+          expect(page).to have_content("#{@m14.name}: $49.50 Fulfilled Value")
+          expect(page).to have_content("#{@m13.name}: $48.00 Fulfilled Value")
+          expect(page).to have_content("#{@m12.name}: $46.50 Fulfilled Value")
+          expect(page).to have_content("#{@m10.name}: $43.50 Fulfilled Value")
+          #limited to ten
+          expect(page).to_not have_content("#{@m6.name}: $40.50 Fulfilled Value")
+        end
+      end
+
+      it "top 5 merchants by fulfilled items fastest to my state" do
+        login_as(@u2)
+
+        visit merchants_path
+
+        within("#top-five-merchants-fulfilled-fastest-state") do
+          expect(page).to have_content("Top Merchants Who Fulfilled Orders Fastest To My State(IA)")
+          expect(page).to have_content("#{@m2.name}: 108 days 00 hours 00 minutes")
+          expect(page).to have_content("#{@m1.name}: 109 days 00 hours 00 minutes")
+          expect(page).to have_content("#{@m16.name}: 171 days 00 hours 00 minutes")
+          expect(page).to have_content("#{@m15.name}: 172 days 00 hours 00 minutes")
+          expect(page).to have_content("#{@m12.name}: 189 days 00 hours 00 minutes")
+          #limited to five
+          expect(page).to_not have_content("#{@m11.name}: 190 days 00 hours 00 minutes")
+        end
+      end
+
+      it "top 5 merchants by fulfilled items fastest to my city" do
+        login_as(@u4)
+
+        visit merchants_path
+
+        within("#top-five-merchants-fulfilled-fastest-city") do
+          expect(page).to have_content("Top Merchants Who Fulfilled Orders Fastest To My City(Des Moines, IA)")
+          expect(page).to have_content("#{@m16.name}: 171 days 00 hours 00 minutes")
+          expect(page).to have_content("#{@m15.name}: 172 days 00 hours 00 minutes")
+          expect(page).to have_content("#{@m3.name}: 208 days 00 hours 00 minutes")
+          expect(page).to have_content("#{@m4.name}: 209 days 00 hours 00 minutes")
+          expect(page).to have_content("#{@m5.name}: 210 days 00 hours 00 minutes")
+          #limited to five
+          expect(page).to_not have_content("#{@m6.name}: 211 days 00 hours 00 minutes")
         end
       end
 

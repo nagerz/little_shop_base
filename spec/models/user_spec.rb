@@ -226,7 +226,7 @@ RSpec.describe User, type: :model do
       end
 
       it ".merchants_sorted_by_fulfilled_orders(last)" do
-        merchants= User.merchants_sorted_by_fulfilled_orders(Time.now.month - 1)
+        merchants= User.merchants_sorted_by_fulfilled_orders(1.month.ago.month)
 
         expect(merchants).to eq([@m8, @m11, @m9, @m10, @m6, @m7])
         expect(merchants[0].total_revenue).to eq(136.5)
@@ -238,7 +238,7 @@ RSpec.describe User, type: :model do
       end
 
       it ".top_3_merchants_by_fulfilled_orders(last)" do
-        merchants = User.top_merchants_by_fulfilled_orders(3, Time.now.month - 1)
+        merchants = User.top_merchants_by_fulfilled_orders(3, 1.month.ago.month)
 
         expect(merchants).to eq([@m8, @m11, @m9])
       end
