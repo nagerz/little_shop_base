@@ -58,5 +58,39 @@ RSpec.describe OrderItem, type: :model do
       expect(oi2.fulfilled).to eq(true)
       expect(item.inventory).to eq(0)
     end
+
+    # it ".sold_this_month()" do
+    #   #travel_to Time.zone.local(2004, 11, 24, 01, 04, 44)
+    #   #now = Time.new(2019, 02, 23)
+    #   item = create(:item)
+    #   oi1 = create(:order_item, quantity: 1, item: item, updated_at: Time.new(2019, 02, 01))
+    #   oi2 = create(:order_item, quantity: 1, item: item, updated_at: Time.new(2019, 02, 12))
+    #   oi3 = create(:order_item, quantity: 1, item: item, updated_at: Time.new(2019, 01, 12))
+    #   oi4 = create(:order_item, quantity: 1, item: item, updated_at: Time.new(2018, 02, 01))
+    #
+    #   expect(oi1.sold_this_month(current)).to eq(true)
+    #   expect(oi2.sold_this_month(current)).to eq(true)
+    #   expect(oi3.sold_this_month(current)).to eq(false)
+    #   expect(oi4.sold_this_month(current)).to eq(false)
+    #
+    #   #travel_back
+    # end
+    #
+    # it ".sold_this_month()" do
+    #   #travel_to Time.zone.local(2004, 11, 24, 01, 04, 44)
+    #   #now = Time.new(2019, 02, 23)
+    #   item = create(:item)
+    #   oi1 = create(:order_item, quantity: 1, item: item, updated_at: Time.new(2019, 01, 01))
+    #   oi2 = create(:order_item, quantity: 1, item: item, updated_at: Time.new(2019, 01, 12))
+    #   oi3 = create(:order_item, quantity: 1, item: item, updated_at: Time.new(2019, 02, 12))
+    #   oi4 = create(:order_item, quantity: 1, item: item, updated_at: Time.new(2018, 01, 01))
+    #
+    #   expect(oi1.sold_this_month(last)).to eq(true)
+    #   expect(oi2.sold_this_month(last)).to eq(true)
+    #   expect(oi3.sold_this_month(last)).to eq(false)
+    #   expect(oi4.sold_this_month(last)).to eq(false)
+    #
+    #   #travel_back
+    # end
   end
 end
