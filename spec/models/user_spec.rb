@@ -57,19 +57,6 @@ RSpec.describe User, type: :model do
         oi5 = create(:order_item, item: i5, order: o5, created_at: 5.days.ago)
         oi6 = create(:fulfilled_order_item, item: i6, order: o6, created_at: 3.days.ago)
         oi7 = create(:fulfilled_order_item, item: i7, order: o7, created_at: 2.days.ago)
-
-
-        #
-        # oi16 = create(:fulfilled_order_item, item: i5, order: o1, created_at: 200.days.ago, updated_at: 30.days.ago)
-        # oi17 = create(:fulfilled_order_item, item: i6, order: o1, created_at: 200.days.ago, updated_at: 30.days.ago)
-        # oi18 = create(:fulfilled_order_item, item: i7, order: o1, created_at: 200.days.ago, updated_at: 30.days.ago)
-        # oi19 = create(:fulfilled_order_item, item: i5, order: o2, created_at: 200.days.ago, updated_at: 30.days.ago)
-        # oi20 = create(:fulfilled_order_item, item: i6, order: o2, created_at: 200.days.ago, updated_at: 30.days.ago)
-        # oi21 = create(:fulfilled_order_item, item: i5, order: o3, created_at: 200.days.ago, updated_at: 30.days.ago)
-        # oi22 = create(:fulfilled_order_item, item: i7, order: o4, created_at: 200.days.ago, updated_at: 30.days.ago)
-        # oi23 = create(:fulfilled_order_item, item: i4, order: o5, created_at: 200.days.ago, updated_at: 30.days.ago)
-
-        #oi24 = create(:order_item, item: i7, order: o3, created_at: 200.days.ago, updated_at: )
       end
       it ".merchants_sorted_by_revenue" do
         expect(User.merchants_sorted_by_revenue).to eq([@m7, @m6, @m3, @m2, @m1])
@@ -276,7 +263,6 @@ RSpec.describe User, type: :model do
 
         expect(User.top_merchants_by_fulfilled_orders_fastest_city(user_2, 3)).to eq([@m3, @m2, @m1])
       end
-
 
     end
   end

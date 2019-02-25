@@ -216,7 +216,6 @@ RSpec.describe "merchant index workflow", type: :feature do
         o13 = create(:completed_order, user: u3)
         o14 = create(:completed_order, user: @u4)
 
-
         #Order_items updated_at (fulfilled) current time (this month)
         oi1 = create(:fulfilled_order_item, item: i4, order: o1, quantity: 1, created_at: 200.days.ago)
         oi2 = create(:fulfilled_order_item, item: i2, order: o1, quantity: 1, created_at: 200.days.ago)
@@ -254,6 +253,7 @@ RSpec.describe "merchant index workflow", type: :feature do
         oi26 = create(:fulfilled_order_item, item: i8, order: o6, quantity: 1, created_at: 200.days.ago, updated_at: 1.month.ago)
         oi27 = create(:fulfilled_order_item, item: i10, order: o6, quantity: 1, created_at: 200.days.ago, updated_at: 1.month.ago)
 
+        #Order_items ordered by users from different states
         oi28 = create(:fulfilled_order_item, item: i11, order: o11, quantity: 1, created_at: 221.days.ago, updated_at: 1.month.ago)
         oi29 = create(:fulfilled_order_item, item: i12, order: o12, quantity: 1, created_at: 220.days.ago, updated_at: 1.month.ago)
         oi30 = create(:fulfilled_order_item, item: i13, order: o13, quantity: 1, created_at: 211.days.ago, updated_at: 1.month.ago)
@@ -261,6 +261,7 @@ RSpec.describe "merchant index workflow", type: :feature do
         oi32 = create(:fulfilled_order_item, item: i15, order: o14, quantity: 1, created_at: 203.days.ago, updated_at: 1.month.ago)
         oi33 = create(:fulfilled_order_item, item: i16, order: o14, quantity: 1, created_at: 202.days.ago, updated_at: 1.month.ago)
 
+        #Order_items ordered by users from different cities in IA
         oi34 = create(:fulfilled_order_item, item: i1, order: o11, quantity: 1, price: 1, created_at: 201.days.ago, updated_at: 3.months.ago)
         oi35 = create(:fulfilled_order_item, item: i2, order: o11, quantity: 1, price: 1, created_at: 200.days.ago, updated_at: 3.months.ago)
         oi35 = create(:fulfilled_order_item, item: i3, order: o14, quantity: 1, price: 1, created_at: 300.days.ago, updated_at: 3.months.ago)
