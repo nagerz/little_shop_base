@@ -30,4 +30,3 @@ class MerchantsController < ApplicationController
     @pending_orders = Order.pending_orders_for_merchant(current_user.id)
   end
 end
-test
