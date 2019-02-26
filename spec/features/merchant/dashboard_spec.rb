@@ -139,7 +139,7 @@ RSpec.describe 'merchant dashboard' do
       describe 'has unfulfilled orders statistic' do
         it 'shows stat with number items and value' do
           within '.unfulfilled-items-worth' do
-            expect(page).to have_content("There are 2 orders requiring attention worth $14.00")
+            expect(page).to have_content("You have 2 orders requiring attention worth $14.00")
             #expect(page).to have_link("Start fulfilling")
           end
         end
@@ -170,8 +170,8 @@ RSpec.describe 'merchant dashboard' do
                 expect(page).to_not have_content("Inventory Shortage")
               end
             end
-            
-            within "#order-#{@o6.id}" do
+
+            within "#order-#{@o7.id}" do
               within ".order-notes" do
                 #expect(page).to have_content("symbol")
                 expect(page).to have_content("Inventory Shortage")

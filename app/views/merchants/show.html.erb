@@ -38,7 +38,7 @@
 
       <section class="unfulfilled-items-worth">
         <% unless @pending_orders.nil? || @pending_orders.empty? %>
-          <h5 class="card-title">There are <%= pluralize(@unfulfilled_orders_count, "order") %> requiring attention worth <%= number_to_currency(@unfulfilled_orders_value) %> </h5>
+          <h5 class="card-title">You have <%= pluralize(@unfulfilled_orders_count, "order") %> requiring attention worth <%= number_to_currency(@unfulfilled_orders_value) %> </h5>
         <% end %>
       </section>
 
@@ -133,7 +133,7 @@
             <td><%= order.total_quantity_for_merchant(@merchant.id) %></td>
             <td><%= order.total_price_for_merchant(@merchant.id) %></td>
             <article class="order-notes">
-              <% if order.item_inventory_low? %>
+              <% unless order.high_quantity_order_items(@merchant.id).empty? %>
                 <td>
                   <span>&#9888;</span> Inventory Shortage
                 </td>
