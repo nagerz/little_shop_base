@@ -6,17 +6,37 @@
 </p>
 <% end %>
 
-<div class="card float-left m-3 order-item-card">
-  <div class="card-body">
-    <h5 class="card-title"><%= @merchant.name %></h5>
-    <p>Role: <%= @merchant.role %></p>
-    <p>Email: <%= @merchant.email %></p>
-    <p>Address: <%= @merchant.address %></p>
-    <p>City: <%= @merchant.city %></p>
-    <p>State: <%= @merchant.state %></p>
-    <p>Zip: <%= @merchant.zip %></p>
+<section class="dashboard-info">
+  <div class="card float-left m-3 order-item-card">
+    <div class="card-body">
+      <h5 class="card-title"><%= @merchant.name %></h5>
+      <p>Role: <%= @merchant.role %></p>
+      <p>Email: <%= @merchant.email %></p>
+      <p>Address: <%= @merchant.address %></p>
+      <p>City: <%= @merchant.city %></p>
+      <p>State: <%= @merchant.state %></p>
+      <p>Zip: <%= @merchant.zip %></p>
+    </div>
   </div>
-</div>
+</section>
+
+<section class="dashboard-todo">
+  <div class="card float-left m-3 order-item-card">
+    <div class="card-body">
+      <h3 class="card-title">To-do Tasks </h3>
+
+      <section class="default-picture-items">
+        <h5 class="card-title">Items Needing a Picture: </h5>
+        <ul>
+          <% @merchant.items.each do |item| %>
+            <li><%= link_to item.name, dashboard_item_path(item) %></li>
+          <% end %>
+        </ul>
+      </section>
+
+    </div>
+  </div>
+</section>
 
 <%= tag.div class: "card" do %>
   <%= tag.section class: "statistics card-body float-left m-4" do %>

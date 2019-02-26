@@ -5,6 +5,7 @@ RSpec.describe 'merchant dashboard' do
     @merchant = create(:merchant)
     @admin = create(:admin)
     @i1, @i2 = create_list(:item, 2, user: @merchant)
+    @i2.image = "https://picsum.photos/200/300/?image=524"
     @o1, @o2 = create_list(:order, 2)
     @o3 = create(:completed_order)
     @o4 = create(:cancelled_order)
@@ -87,6 +88,19 @@ RSpec.describe 'merchant dashboard' do
         visit admin_merchant_path(@merchant)
         click_link('Items for Sale')
         expect(current_path).to eq(admin_merchant_items_path(@merchant))
+      end
+    end
+
+    describe 'shows a merchant to-do list' do
+      it 'has a header' do
+        expect(page).to have_content("To-do Tasks")
+      end
+      it 'has a items with default picture list' do
+        within '.default-picture-items' do
+          expect(page).to have_content("Items Needing a Picture:")
+          expect(page).to_not have_content(@i1.name)
+          expect(page).to have_link(@i2.name)
+        end
       end
     end
   end

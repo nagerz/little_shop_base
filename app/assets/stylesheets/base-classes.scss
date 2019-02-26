@@ -17,5 +17,28 @@
 }
 
 .order-item-card {
-  width: 18rem;
+  width: 28rem;
+}
+
+.merchant-statistics .m-2 {
+  height: 30vh !important;
+  width: 35vw !important;
+}
+
+.dashboard-info .m-3 {
+  margin-top: 0rem !important;
+  margin-right: 1rem !important;
+  margin-bottom: 1rem !important;
+  margin-left: 1rem !important;
+}
+
+.merchant-index-info .merchant-card {
+  margin-top: 1rem !important;
+  margin-right: 1rem !important;
+  margin-bottom: 1rem !important;
+  margin-left: 0rem !important;
+}
+
+.dashboard-todo h3 {
+  text-decoration: underline;
 }
