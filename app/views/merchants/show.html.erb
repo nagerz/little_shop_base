@@ -37,8 +37,8 @@
       </section>
 
       <section class="unfulfilled-items-worth">
-        <% unless @unfulfilled_orders.empty? %>
-          <h5 class="card-title">There are <%= pluralize(@unfulfilled_orders.order_count, "order") %> requiring attention worth <%= number_to_currency(@unfulfilled_orders.total_value) %> </h5>
+        <% unless @pending_orders.empty? %>
+          <h5 class="card-title">There are <%= pluralize(@unfulfilled_orders_count, "order") %> requiring attention worth <%= number_to_currency(@unfulfilled_orders_value) %> </h5>
         <% end %>
       </section>
 
