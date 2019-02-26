@@ -113,26 +113,30 @@
   </p>
 </section>
 
-
-<% if @pending_orders %>
-  <table class="table">
-    <thead>
-      <tr>
-        <th>ID</th>
-        <th>Created Date</th>
-        <th>Quantity</th>
-        <th>Price</th>
-      </tr>
-    </thead>
-    <tbody>
-      <% @pending_orders.each do |order| %>
-        <tr id="order-<%= order.id %>">
-          <td><%= link_to order.id, dashboard_order_path(order) %></td>
-          <td><%= order.created_at %></td>
-          <td><%= order.total_quantity_for_merchant(@merchant.id) %></td>
-          <td><%= order.total_price_for_merchant(@merchant.id) %></td>
+<section class="unfulfilled-orders-table">
+  <% if @pending_orders %>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Created Date</th>
+          <th>Quantity</th>
+          <th>Price</th>
+          <th>Notes</th>
         </tr>
-      <% end %>
-    </tbody>
-  </table>
-<% end %>
+      </thead>
+      <tbody>
+        <% @pending_orders.each do |order| %>
+          <tr id="order-<%= order.id %>">
+            <td><%= link_to order.id, dashboard_order_path(order) %></td>
+            <td><%= order.created_at %></td>
+            <td><%= order.total_quantity_for_merchant(@merchant.id) %></td>
+            <article class="order-notes">
+              <td><%= order.total_price_for_merchant(@merchant.id) %></td>
+            </article>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  <% end %>
+</section>
