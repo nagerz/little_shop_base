@@ -50,4 +50,15 @@ class Order < ApplicationRecord
     order_items.joins('join items on items.id = order_items.item_id')
                .where(items: {merchant_id: merchant_id})
   end
+
+  def self.unfulfilled_orders_for_merchant_count(merchant_id)
+    pending_orders_for_merchant(merchant_id).count
+  end
+
+
+  def self.unfulfilled_orders_for_merchant_value(merchant_id)
+    orders = pending_orders_for_merchant(merchant_id)
+
+    orders.sum("order_items.price * order_items.quantity")
+  end
 end

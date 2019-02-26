@@ -52,6 +52,18 @@ RSpec.describe Order, type: :model do
     it '.pending_orders_for_merchant' do
       expect(Order.pending_orders_for_merchant(@merchant.id)).to eq([@o8, @o9])
     end
+
+    it '.unfulfilled_orders_for_merchant_count' do
+      count = Order.unfulfilled_orders_for_merchant_count(@merchant.id)
+
+      expect(count).to eq(2)
+    end
+
+    it '.unfulfilled_orders_for_merchant_value' do
+      value = Order.unfulfilled_orders_for_merchant_value(@merchant.id)
+
+      expect(value).to eq(14)
+    end
   end
 
   describe 'instance methods' do

@@ -28,5 +28,7 @@ class MerchantsController < ApplicationController
   def show
     @merchant = current_user
     @pending_orders = Order.pending_orders_for_merchant(current_user.id)
+    @default_picture_items = @merchant.items.default_picture
+    @unfulfilled_orders_count = Order.unfulfilled_orders_for_merchant(current_user.id)
   end
 end

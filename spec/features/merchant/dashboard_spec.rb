@@ -5,7 +5,7 @@ RSpec.describe 'merchant dashboard' do
     @merchant = create(:merchant)
     @admin = create(:admin)
     @i1, @i2 = create_list(:item, 2, user: @merchant)
-    @i2.image = "https://picsum.photos/200/300/?image=524"
+    @i2.update(image: "https://picsum.photos/200/300/?image=524")
     @o1, @o2 = create_list(:order, 2)
     @o3 = create(:completed_order)
     @o4 = create(:cancelled_order)
@@ -39,7 +39,8 @@ RSpec.describe 'merchant dashboard' do
 
   describe 'merchant user with orders visits their profile' do
     before :each do
-      allow_any_instance_of(ApplicationController).to receive(:current_user).and_return(@merchant)
+      #allow_any_instance_of(ApplicationController).to receive(:current_user).and_return(@merchant)
+      login_as(@merchant)
 
       visit dashboard_path
     end
@@ -95,13 +96,48 @@ RSpec.describe 'merchant dashboard' do
       it 'has a header' do
         expect(page).to have_content("To-do Tasks")
       end
-      it 'has a items with default picture list' do
-        within '.default-picture-items' do
-          expect(page).to have_content("Items Needing a Picture:")
-          expect(page).to_not have_content(@i1.name)
-          expect(page).to have_link(@i2.name)
+
+      describe 'identifies items with default image' do
+        it 'has a items with default picture list' do
+          within '.default-picture-items' do
+            expect(page).to have_content("Items Needing an Updated Picture:")
+            expect(page).to_not have_content(@i1.name)
+            expect(page).to have_link(@i2.name)
+          end
+        end
+
+        it 'item names are a link to edit item form' do
+          within '.default-picture-items' do
+            expect(page).to have_link(@i2.name)
+            click_link(@i2.name)
+          end
+
+          expect(current_path).to eq(edit_dashboard_item_path(@i2))
+        end
+
+        it 'doesnt show up if no items' do
+          merchant2 = create(:merchant)
+          create_list(:item, 2, user: merchant2)
+
+          click_link("Log out")
+          login_as(merchant2)
+
+          within '.dashboard-todo' do
+            expect(page).to_not have_content("Items Needing an Updated Picture:")
+          end
         end
       end
+
+      describe 'has unfulfilled orders statistic' do
+        it 'shows stat with number items and value' do
+          within '.unfulfilled-items-worth' do
+            expect(page).to have_content("There are 2 orders requiring attention worth $14.00")
+            #expect(page).to have_link("Start fulfilling")
+          end
+        end
+      end
+
+
     end
   end
 end
