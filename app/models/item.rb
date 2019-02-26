@@ -48,7 +48,7 @@ class Item < ApplicationRecord
       .count > 0
   end
 
-  def self.default_picture
+  def self.default_picture_items
     self.where(image: 'https://picsum.photos/200/300/?image=524')
   end
 end

@@ -42,6 +42,17 @@
         <% end %>
       </section>
 
+      <section class="low-item-inventory">
+        <% unless @low_inventory_items.nil? || @low_inventory_tiems.empty? %>
+          <h5 class="card-title">Not enough inventory to meet demand for these items: </h5>
+          <ul>
+            <% @low_inventory_items.each do |item| %>
+              <li><%= link_to item.name, dashboard_item_path(item) %> (<%= item.total_quantity %> ordered worth <%= number_to_currency(item.total_value) %>) <%= link_to "Restocked?", edit_dashboard_item_path(item) %></li>
+            <% end %>
+          </ul>
+        <% end %>
+      </section>
+
     </div>
   </div>
 </section>
