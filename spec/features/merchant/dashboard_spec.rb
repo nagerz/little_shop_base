@@ -16,15 +16,20 @@ RSpec.describe 'merchant dashboard' do
     create(:order_item, order: @o4, item: @i2, quantity: 5, price: 2)
 
     @merchant2 = create(:merchant)
+    @merchant3 = create(:merchant)
     @i3, @i4 = create_list(:item, 2, user: @merchant2, inventory: 10)
-    @o5 = create(:completed_order)
+    @i5, @i6 = create_list(:item, 2, user: @merchant3)
+    @o5 = create(:cancelled_order)
     @o6 = create(:order)
     @o7 = create(:order)
+    @o8 = create(:order)
     create(:order_item, order: @o5, item: @i3, quantity: 1, price: 2)
     create(:fulfilled_order_item, order: @o6, item: @i4, quantity: 4, price: 4)
     create(:order_item, order: @o6, item: @i3, quantity: 8, price: 4)
     create(:order_item, order: @o7, item: @i3, quantity: 8, price: 4)
     create(:order_item, order: @o7, item: @i4, quantity: 12, price: 4)
+    create(:fulfilled_order_item, order: @o8, item: @i5, quantity: 4, price: 4)
+
   end
 
   describe 'merchant user visits their profile' do
@@ -146,7 +151,7 @@ RSpec.describe 'merchant dashboard' do
 
         it 'doesnt show up if no unfulfilled items' do
           click_link("Log out")
-          login_as(@merchant2)
+          login_as(@merchant3)
 
           within '.dashboard-todo' do
             expect(page).to_not have_content("requiring attention worth")
@@ -154,8 +159,8 @@ RSpec.describe 'merchant dashboard' do
         end
       end
 
-      describe 'has inventory warning if order item exceeds inventory quantity' do
-        it 'shows warning if any order item exceeds inventory quantity' do
+      describe 'order inventory warning to-do' do
+        it 'shows warning if any (unfulfilled) order item exceeds inventory quantity' do
           click_link("Log out")
           login_as(@merchant2)
 
@@ -177,10 +182,32 @@ RSpec.describe 'merchant dashboard' do
                 expect(page).to have_content("Inventory Shortage")
               end
             end
-
           end
         end
       end
+
+      describe 'item inventory warning' do
+        it 'shows warning if sum of mulitple items exceeds inventory' do
+          click_link("Log out")
+          login_as(@merchant2)
+
+          within '.dashboard-todo' do
+            expect(page).to have_content("Not enough inventory to meet demand for these items:")
+            expect(page).to have_content("#{@i1.name} (x ordereded worth $750)")
+            expect(page).to have_link(@i1.name)
+          end
+        end
+
+        it 'doesnt show up if no order items exceeding inventory' do
+          click_link("Log out")
+          login_as(@merchant3)
+
+          within '.dashboard-todo' do
+            expect(page).to_not have_content("Not enough inventory to meet demand for these items:")
+          end
+        end
+      end
+
 
 
     end
