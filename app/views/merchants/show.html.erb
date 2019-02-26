@@ -131,8 +131,13 @@
             <td><%= link_to order.id, dashboard_order_path(order) %></td>
             <td><%= order.created_at %></td>
             <td><%= order.total_quantity_for_merchant(@merchant.id) %></td>
+            <td><%= order.total_price_for_merchant(@merchant.id) %></td>
             <article class="order-notes">
-              <td><%= order.total_price_for_merchant(@merchant.id) %></td>
+              <% if order.item_inventory_low? %>
+                <td>
+                  <span>&#9888;</span> Inventory Shortage
+                </td>
+              <% end %>
             </article>
           </tr>
         <% end %>

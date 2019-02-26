@@ -62,4 +62,12 @@ class Order < ApplicationRecord
 
     orders.sum("order_items.price * order_items.quantity")
   end
+
+  def high_quantity_order_items(merchant_id)
+    items = order_items_for_merchant(merchant_id)
+    items.where(order: self)
+         .where(fulfilled: false)
+         .where('quantity > items.inventory')
+  end
+
 end

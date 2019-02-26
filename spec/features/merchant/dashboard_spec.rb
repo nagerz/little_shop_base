@@ -3,7 +3,6 @@ require 'rails_helper'
 RSpec.describe 'merchant dashboard' do
   before :each do
     @merchant = create(:merchant)
-    @merchant2 = create(:merchant)
     @admin = create(:admin)
     @i1, @i2 = create_list(:item, 2, user: @merchant)
     @i2.update(image: "https://picsum.photos/200/300/?image=524")
@@ -16,12 +15,13 @@ RSpec.describe 'merchant dashboard' do
     create(:order_item, order: @o3, item: @i1, quantity: 4, price: 2)
     create(:order_item, order: @o4, item: @i2, quantity: 5, price: 2)
 
+    @merchant2 = create(:merchant)
     @i3, @i4 = create_list(:item, 2, user: @merchant2, inventory: 10)
     @o5 = create(:completed_order)
     @o6 = create(:order)
     @o7 = create(:order)
     create(:order_item, order: @o5, item: @i3, quantity: 1, price: 2)
-    create(:fulfilled_order_item, order: @o6, item: @i4, quantity: 1, price: 4)
+    create(:fulfilled_order_item, order: @o6, item: @i4, quantity: 4, price: 4)
     create(:order_item, order: @o6, item: @i3, quantity: 8, price: 4)
     create(:order_item, order: @o7, item: @i3, quantity: 8, price: 4)
     create(:order_item, order: @o7, item: @i4, quantity: 12, price: 4)
@@ -158,24 +158,26 @@ RSpec.describe 'merchant dashboard' do
         it 'shows warning if any order item exceeds inventory quantity' do
           click_link("Log out")
           login_as(@merchant2)
-          
+
           within '.unfulfilled-orders-table' do
             expect(page).to have_content("Notes")
             expect(page).to have_content(@o6.id)
             expect(page).to have_content(@o7.id)
 
-            within "order-#{@o6.id}" do
-              within "order-notes" do
+            within "#order-#{@o6.id}" do
+              within ".order-notes" do
                 #expect(page).to_not have_content("symbol")
                 expect(page).to_not have_content("Inventory Shortage")
               end
             end
-            within "order-#{@o6.id}" do
-              within "order-notes" do
+            
+            within "#order-#{@o6.id}" do
+              within ".order-notes" do
                 #expect(page).to have_content("symbol")
                 expect(page).to have_content("Inventory Shortage")
               end
             end
+
           end
         end
       end
