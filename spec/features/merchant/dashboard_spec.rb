@@ -3,6 +3,7 @@ require 'rails_helper'
 RSpec.describe 'merchant dashboard' do
   before :each do
     @merchant = create(:merchant)
+    @merchant2 = create(:merchant)
     @admin = create(:admin)
     @i1, @i2 = create_list(:item, 2, user: @merchant)
     @i2.update(image: "https://picsum.photos/200/300/?image=524")
@@ -14,6 +15,12 @@ RSpec.describe 'merchant dashboard' do
     create(:order_item, order: @o2, item: @i2, quantity: 4, price: 2)
     create(:order_item, order: @o3, item: @i1, quantity: 4, price: 2)
     create(:order_item, order: @o4, item: @i2, quantity: 5, price: 2)
+
+    @i3, @i4 = create_list(:item, 2, user: @merchant2)
+    @o5 = create(:completed_order)
+    @o6 = create(:order)
+    create(:order_item, order: @o5, item: @i3, quantity: 1, price: 2)
+    create(:fulfilled_order_item, order: @o6, item: @i4, quantity: 1, price: 4)
   end
 
   describe 'merchant user visits their profile' do
@@ -116,11 +123,8 @@ RSpec.describe 'merchant dashboard' do
         end
 
         it 'doesnt show up if no items' do
-          merchant2 = create(:merchant)
-          create_list(:item, 2, user: merchant2)
-
           click_link("Log out")
-          login_as(merchant2)
+          login_as(@merchant2)
 
           within '.dashboard-todo' do
             expect(page).to_not have_content("Items Needing an Updated Picture:")
@@ -133,6 +137,15 @@ RSpec.describe 'merchant dashboard' do
           within '.unfulfilled-items-worth' do
             expect(page).to have_content("There are 2 orders requiring attention worth $14.00")
             #expect(page).to have_link("Start fulfilling")
+          end
+        end
+
+        it 'doesnt show up if no unfulfilled items' do
+          click_link("Log out")
+          login_as(@merchant2)
+
+          within '.dashboard-todo' do
+            expect(page).to_not have_content("requiring attention worth")
           end
         end
       end

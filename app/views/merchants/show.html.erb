@@ -26,7 +26,7 @@
       <h3 class="card-title">To-do Tasks </h3>
 
       <section class="default-picture-items">
-        <% unless @default_picture_items.empty? %>
+        <% unless @default_picture_items.nil? || @default_picture_items.empty? %>
           <h5 class="card-title">Items Needing an Updated Picture: </h5>
           <ul>
             <% @default_picture_items.each do |item| %>
@@ -37,7 +37,7 @@
       </section>
 
       <section class="unfulfilled-items-worth">
-        <% unless @pending_orders.empty? %>
+        <% unless @pending_orders.nil? || @pending_orders.empty? %>
           <h5 class="card-title">There are <%= pluralize(@unfulfilled_orders_count, "order") %> requiring attention worth <%= number_to_currency(@unfulfilled_orders_value) %> </h5>
         <% end %>
       </section>
