@@ -25,7 +25,6 @@ RSpec.describe Item, type: :model do
         user = create(:user)
         @i7 = create(:item, user: merchant, image: "https://picsum.photos/200/300/?image=524")
 
-
         order = create(:completed_order, user: user)
         create(:fulfilled_order_item, order: order, item: @items[3], quantity: 7)
         create(:fulfilled_order_item, order: order, item: @items[1], quantity: 6)
@@ -51,8 +50,13 @@ RSpec.describe Item, type: :model do
     end
 
     it '.default_picture_items' do
+      merchant = create(:merchant)
+      create_list(:item, 6, user: merchant)
+      create(:user)
+      i7 = create(:item, user: merchant, image: "https://picsum.photos/200/300/?image=524")
+
       actual = Item.default_picture_items
-      expect(actual).to eq([@i7])
+      expect(actual).to eq([i7])
     end
     it '.low_inventory_items' do
       merchant1 = create(:merchant)

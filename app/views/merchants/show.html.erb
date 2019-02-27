@@ -25,9 +25,17 @@
     <div class="card-body">
       <h3 class="card-title">To-do Tasks </h3>
 
+      <section class="nothing-todo">
+        <% if (@pending_orders.nil? || @pending_orders.empty?) &&
+              (@default_picture_items.nil? || @default_picture_items.empty?) &&
+              (@low_inventory_items.nil? || @low_inventory_items.empty?) %>
+          <h5 class="card-title">All tasks are complete at this time.</h5>
+        <% end %>
+      </section>
+
       <section class="default-picture-items">
         <% unless @default_picture_items.nil? || @default_picture_items.empty? %>
-          <h5 class="card-title">Items Needing an Updated Picture: </h5>
+          <h5 class="card-title"><span style='font-size:16px;'>&#9654;</span> Items Needing an Updated Picture: </h5>
           <ul>
             <% @default_picture_items.each do |item| %>
               <li><%= link_to item.name, edit_dashboard_item_path(item) %></li>
@@ -38,16 +46,18 @@
 
       <section class="unfulfilled-items-worth">
         <% unless @pending_orders.nil? || @pending_orders.empty? %>
-          <h5 class="card-title">You have <%= pluralize(@unfulfilled_orders_count, "order") %> requiring attention worth <%= number_to_currency(@unfulfilled_orders_value) %> </h5>
+        <br>
+          <h5 class="card-title"><span style='font-size:16px;'>&#9654;</span> You have <%= pluralize(@unfulfilled_orders_count, "order") %> requiring attention worth <%= number_to_currency(@unfulfilled_orders_value) %> </h5>
         <% end %>
       </section>
 
       <section class="low-item-inventory">
-        <% unless @low_inventory_items.nil? || @low_inventory_tiems.empty? %>
-          <h5 class="card-title">Not enough inventory to meet demand for these items: </h5>
+        <% unless @low_inventory_items.nil? || @low_inventory_items.empty? %>
+        <br>
+          <h5 class="card-title"><span style='font-size:16px;'>&#9654;</span> Not enough inventory to meet demand for these items: </h5>
           <ul>
             <% @low_inventory_items.each do |item| %>
-              <li><%= link_to item.name, dashboard_item_path(item) %> (<%= item.total_quantity %> ordered worth <%= number_to_currency(item.total_value) %>) <%= link_to "Restocked?", edit_dashboard_item_path(item) %></li>
+              <li><%= link_to item.name, item_path(item) %>: (<%= item.item_quantity %> ordered across <%= pluralize(item.order_quantity, "order") %> worth <%= number_to_currency(item.total_value) %>) <br><%= link_to "Restocked?", edit_dashboard_item_path(item) %></li>
             <% end %>
           </ul>
         <% end %>

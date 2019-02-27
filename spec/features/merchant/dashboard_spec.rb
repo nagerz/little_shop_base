@@ -17,19 +17,25 @@ RSpec.describe 'merchant dashboard' do
 
     @merchant2 = create(:merchant)
     @merchant3 = create(:merchant)
-    @i3, @i4 = create_list(:item, 2, user: @merchant2, inventory: 10)
-    @i5, @i6 = create_list(:item, 2, user: @merchant3)
+    @merchant4 = create(:merchant)
+    @i3, @i4, @i7 = create_list(:item, 3, user: @merchant2, inventory: 10)
+    @i5, @i6 = create_list(:item, 2, user: @merchant3, inventory: 20)
+    @i8 = create(:item, user: @merchant4, inventory: 20)
     @o5 = create(:cancelled_order)
     @o6 = create(:order)
     @o7 = create(:order)
     @o8 = create(:order)
     create(:order_item, order: @o5, item: @i3, quantity: 1, price: 2)
     create(:fulfilled_order_item, order: @o6, item: @i4, quantity: 4, price: 4)
-    create(:order_item, order: @o6, item: @i3, quantity: 8, price: 4)
+    create(:order_item, order: @o6, item: @i3, quantity: 7, price: 4)
     create(:order_item, order: @o7, item: @i3, quantity: 8, price: 4)
     create(:order_item, order: @o7, item: @i4, quantity: 12, price: 4)
+    create(:order_item, order: @o1, item: @i7, quantity: 2, price: 7)
+    create(:order_item, order: @o2, item: @i7, quantity: 5, price: 5)
+    create(:order_item, order: @o6, item: @i7, quantity: 8, price: 4)
     create(:fulfilled_order_item, order: @o8, item: @i5, quantity: 4, price: 4)
-
+    create(:order_item, order: @o8, item: @i6, quantity: 12, price: 4)
+    create(:fulfilled_order_item, order: @o8, item: @i8, quantity: 12, price: 4)
   end
 
   describe 'merchant user visits their profile' do
@@ -151,7 +157,7 @@ RSpec.describe 'merchant dashboard' do
 
         it 'doesnt show up if no unfulfilled items' do
           click_link("Log out")
-          login_as(@merchant3)
+          login_as(@merchant4)
 
           within '.dashboard-todo' do
             expect(page).to_not have_content("requiring attention worth")
@@ -183,6 +189,7 @@ RSpec.describe 'merchant dashboard' do
               end
             end
           end
+
         end
       end
 
@@ -193,8 +200,13 @@ RSpec.describe 'merchant dashboard' do
 
           within '.dashboard-todo' do
             expect(page).to have_content("Not enough inventory to meet demand for these items:")
-            expect(page).to have_content("#{@i1.name} (x ordereded worth $750)")
-            expect(page).to have_link(@i1.name)
+            expect(page).to have_content("#{@i3.name}: (15 ordered across 2 orders worth $60.00)")
+            expect(page).to have_link(@i3.name)
+            expect(page).to have_content("#{@i4.name}: (12 ordered across 1 order worth $48.00)")
+            expect(page).to have_link(@i4.name)
+            expect(page).to have_content("#{@i7.name}: (15 ordered across 3 orders worth $71.00)")
+            expect(page).to have_link(@i7.name)
+            expect(page).to have_link("Restocked?")
           end
         end
 
