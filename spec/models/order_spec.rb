@@ -52,6 +52,18 @@ RSpec.describe Order, type: :model do
     it '.pending_orders_for_merchant' do
       expect(Order.pending_orders_for_merchant(@merchant.id)).to eq([@o8, @o9])
     end
+
+    it '.unfulfilled_orders_for_merchant_count' do
+      count = Order.unfulfilled_orders_for_merchant_count(@merchant.id)
+
+      expect(count).to eq(2)
+    end
+
+    it '.unfulfilled_orders_for_merchant_value' do
+      value = Order.unfulfilled_orders_for_merchant_value(@merchant.id)
+
+      expect(value).to eq(14)
+    end
   end
 
   describe 'instance methods' do
@@ -108,6 +120,27 @@ RSpec.describe Order, type: :model do
       oi3 = create(:order_item, order: order, item: item3, quantity: 3, price: 4)
 
       expect(order.order_items_for_merchant(merchant1.id)).to eq([oi1, oi3])
+    end
+
+    it '.high_quantity_order_items()' do
+      merchant1 = create(:merchant)
+      merchant2 = create(:merchant)
+      user = create(:user)
+      order = create(:order, user: user)
+      order2 = create(:order, user: user)
+      item1 = create(:item, user: merchant1, inventory: 5)
+      item2 = create(:item, user: merchant2, inventory: 5)
+      item3 = create(:item, user: merchant1, inventory: 5)
+      item4 = create(:item, user: merchant2, inventory: 10)
+      oi1 = create(:order_item, order: order, item: item1, quantity: 1, price: 2)
+      oi2 = create(:order_item, order: order, item: item2, quantity: 6, price: 3)
+      oi3 = create(:order_item, order: order, item: item4, quantity: 7, price: 3)
+      oi4 = create(:fulfilled_order_item, order: order, item: item2, quantity: 6, price: 3)
+      oi5 = create(:order_item, order: order2, item: item2, quantity: 6, price: 3)
+      oi6 = create(:order_item, order: order, item: item3, quantity: 3, price: 4)
+      oi7 = create(:order_item, order: order, item: item3, quantity: 3, price: 4)
+
+      expect(order.high_quantity_order_items(merchant2.id)).to eq([oi2])
     end
   end
 end

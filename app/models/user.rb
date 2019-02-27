@@ -148,8 +148,7 @@ class User < ApplicationRecord
          .limit(limit)
   end
 
-
-
+  ##Advanced merchant statistic methods
   def self.top_merchants_by_month_items(limit, month = Time.now.month)
     merchants_sorted_by_month_items(month).limit(limit)
   end

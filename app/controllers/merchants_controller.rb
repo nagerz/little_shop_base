@@ -7,7 +7,7 @@ class MerchantsController < ApplicationController
     else
       @merchants = User.active_merchants
     end
-    if current_user
+    if current_reguser?
       @user = current_user
       @top_five_merchants_by_fastest_fulfillment_state = @merchants.top_merchants_by_fulfilled_orders_fastest_state(@user, 5)
       @top_five_merchants_by_fastest_fulfillment_city = @merchants.top_merchants_by_fulfilled_orders_fastest_city(@user, 5)
@@ -28,6 +28,9 @@ class MerchantsController < ApplicationController
   def show
     @merchant = current_user
     @pending_orders = Order.pending_orders_for_merchant(current_user.id)
+    @default_picture_items = @merchant.items.default_picture_items
+    @unfulfilled_orders_count = Order.unfulfilled_orders_for_merchant_count(current_user.id)
+    @unfulfilled_orders_value = Order.unfulfilled_orders_for_merchant_value(current_user.id)
+    @low_inventory_items = @merchant.items.low_inventory_items
   end
 end
-test
