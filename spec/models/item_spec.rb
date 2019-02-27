@@ -23,6 +23,7 @@ RSpec.describe Item, type: :model do
         merchant = create(:merchant)
         @items = create_list(:item, 6, user: merchant)
         user = create(:user)
+        @i7 = create(:item, user: merchant, image: "https://picsum.photos/200/300/?image=524")
 
         order = create(:completed_order, user: user)
         create(:fulfilled_order_item, order: order, item: @items[3], quantity: 7)
@@ -46,6 +47,58 @@ RSpec.describe Item, type: :model do
         expect(actual).to eq([@items[4], @items[5], @items[2]])
         expect(actual[0].total_ordered).to eq(1)
       end
+    end
+
+    it '.default_picture_items' do
+      merchant = create(:merchant)
+      create_list(:item, 6, user: merchant)
+      create(:user)
+      i7 = create(:item, user: merchant, image: "https://picsum.photos/200/300/?image=524")
+
+      actual = Item.default_picture_items
+      expect(actual).to eq([i7])
+    end
+    it '.low_inventory_items' do
+      merchant1 = create(:merchant)
+      merchant2 = create(:merchant)
+      item1, item2, item3, item4 = create_list(:item, 4, user: merchant1, inventory: 10)
+      item5, item6 = create_list(:item, 2, user: merchant2, inventory: 10)
+
+      user = create(:user)
+      order1 = create(:order, user: user)
+      order2 = create(:order, user: user)
+      order3 = create(:order, user: user)
+      order4 = create(:cancelled_order, user: user)
+
+      create(:order_item, order: order1, item: item1, quantity: 7, price: 2)
+      create(:order_item, order: order2, item: item1, quantity: 6, price: 2)
+      create(:order_item, order: order1, item: item2, quantity: 3, price: 2)
+      create(:order_item, order: order2, item: item2, quantity: 4, price: 2)
+      create(:order_item, order: order3, item: item2, quantity: 5, price: 2)
+      create(:order_item, order: order3, item: item3, quantity: 9, price: 2)
+      #Should only factor previosly unfulfilled order items
+      create(:fulfilled_order_item, order: order1, item: item3, quantity: 3, price: 2)
+      create(:fulfilled_order_item, order: order3, item: item1, quantity: 3, price: 2)
+      #Should only factor items in non-cancelled orders
+      create(:order_item, order: order4, item: item3, quantity: 3, price: 2)
+      #Should only factor items of current merchant
+      create(:order_item, order: order1, item: item5, quantity: 2, price: 2)
+      create(:order_item, order: order1, item: item5, quantity: 7, price: 2)
+
+      expect(merchant1.items).to eq([item1, item2, item3, item4])
+      expect(merchant2.items).to eq([item5, item6])
+
+      low_items1 = merchant1.items.low_inventory_items
+      low_items2 = merchant2.items.low_inventory_items
+
+      expect(low_items1).to eq([item1, item2])
+      expect(low_items2).to eq([])
+      expect(low_items1[0].item_quantity).to eq(13)
+      expect(low_items1[0].total_value).to eq(26)
+      expect(low_items1[0].order_quantity).to eq(2)
+      expect(low_items1[1].item_quantity).to eq(12)
+      expect(low_items1[1].total_value).to eq(24)
+      expect(low_items1[1].order_quantity).to eq(3)
     end
   end
 

@@ -42,6 +42,7 @@ class Order < ApplicationRecord
   def self.pending_orders_for_merchant(merchant_id)
     self.where(status: 0)
         .where(items: {merchant_id: merchant_id})
+        .where(order_items: {fulfilled: false})
         .joins(:items)
         .distinct
   end
@@ -50,4 +51,23 @@ class Order < ApplicationRecord
     order_items.joins('join items on items.id = order_items.item_id')
                .where(items: {merchant_id: merchant_id})
   end
+
+  def self.unfulfilled_orders_for_merchant_count(merchant_id)
+    pending_orders_for_merchant(merchant_id).count
+  end
+
+
+  def self.unfulfilled_orders_for_merchant_value(merchant_id)
+    orders = pending_orders_for_merchant(merchant_id)
+
+    orders.sum("order_items.price * order_items.quantity")
+  end
+
+  def high_quantity_order_items(merchant_id)
+    items = order_items_for_merchant(merchant_id)
+    items.where(order: self)
+         .where(fulfilled: false)
+         .where('quantity > items.inventory')
+  end
+
 end

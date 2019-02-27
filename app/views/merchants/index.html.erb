@@ -1,59 +1,157 @@
 <h1>Merchant List</h1>
-<%= tag.div class: "card" do %>
-  <%= tag.section class: "statistics card-body float-left m-4" do %>
-    <%= tag.section id: "top-three-merchants-revenue", class: "card-body float-left m-2" do %>
-      <h5 class="card-title">Top Merchants by Revenue</h5>
-      <ul>
-        <% @top_three_merchants_by_revenue.each do |merchant| %>
-          <li><%= link_to merchant.name, merchant_path(merchant) %>: <%= number_to_currency(merchant.total) %></li>
-        <% end %>
-      </ul>
-    <% end %>
-    <%= tag.section id: "top-three-merchants-fulfillment", class: "card-body float-left m-2" do %>
-      <h5 class="card-title">Best Fulfillment Times</h5>
-      <ul>
-        <% @top_three_merchants_by_fulfillment.each do |merchant| %>
-          <li><%= link_to merchant.name, merchant_path(merchant) %>: <%= time_as_words(merchant.fulfillment_time) %></li>
-        <% end %>
-      </ul>
-    <% end %>
-    <%= tag.section id: "bottom-three-merchants-fulfillment", class: "card-body float-left m-2" do %>
-      <h5 class="card-title">Worst Fulfillment Times</h5>
-      <ul>
-        <% @bottom_three_merchants_by_fulfillment.each do |merchant| %>
-          <li><%= link_to merchant.name, merchant_path(merchant) %>: <%= time_as_words(merchant.fulfillment_time) %></li>
-        <% end %>
-      </ul>
-    <% end %>
-    <%= tag.section id: "top-states-by-order", class: "card-body float-left m-2" do %>
-      <h5 class="card-title">Top States by Order</h5>
-      <ul>
-        <% @top_states_by_order_count.each do |result| %>
-          <li><%= result.state %>: <%= pluralize(result.order_count, "order") %></li>
-        <% end %>
-      </ul>
-    <% end %>
-    <%= tag.section id: "top-cities-by-order", class: "card-body float-left m-2" do %>
-      <h5 class="card-title">Top Cities by Order</h5>
-      <ul>
-        <% @top_cities_by_order_count.each do |result| %>
-          <li><%= result.city %>, <%= result.state %>: <%= pluralize(result.order_count, "order") %></li>
-        <% end %>
-      </ul>
-    <% end %>
-    <%= tag.section id: "top-orders-by-items-shipped", class: "card-body float-left m-2" do %>
-      <h5 class="card-title">Top Orders by Items Shipped</h5>
-      <ul>
-        <% @top_orders_by_items_shipped.each do |result| %>
-          <li>Order <%= result.id %>: <%= pluralize(result.quantity, "item") %></li>
-        <% end %>
-      </ul>
+<section class="merchant-statistics">
+  <%= tag.div class: "card" do %>
+    <%= tag.section class: "statistics card-body float-left m-4" do %>
+      <%= tag.section id: "top-three-merchants-fulfillment", class: "card-body float-left m-2" do %>
+        <h5 class="card-title">Top Merchants by Fulfillment Time</h5>
+        <ul>
+          <% @top_three_merchants_by_fulfillment.each do |merchant| %>
+            <li><%= link_to merchant.name, merchant_path(merchant) %>: <%= time_as_words(merchant.fulfillment_time) %></li>
+          <% end %>
+        </ul>
+      <% end %>
+      <%= tag.section id: "bottom-three-merchants-fulfillment", class: "card-body float-left m-2" do %>
+        <h5 class="card-title">Worst Merchants by Fulfillment Time</h5>
+        <ul>
+          <% @bottom_three_merchants_by_fulfillment.each do |merchant| %>
+            <li><%= link_to merchant.name, merchant_path(merchant) %>: <%= time_as_words(merchant.fulfillment_time) %></li>
+          <% end %>
+        </ul>
+      <% end %>
+      <%= tag.section id: "top-states-by-order", class: "card-body float-left m-2" do %>
+        <h5 class="card-title">Top States by Order</h5>
+        <ul>
+          <% @top_states_by_order_count.each do |result| %>
+            <li><%= result.state %>: <%= pluralize(result.order_count, "order") %></li>
+          <% end %>
+        </ul>
+      <% end %>
+      <%= tag.section id: "top-cities-by-order", class: "card-body float-left m-2" do %>
+        <h5 class="card-title">Top Cities by Order</h5>
+        <ul>
+          <% @top_cities_by_order_count.each do |result| %>
+            <li><%= result.city %>, <%= result.state %>: <%= pluralize(result.order_count, "order") %></li>
+          <% end %>
+        </ul>
+      <% end %>
+      <%= tag.section id: "top-three-merchants-revenue", class: "card-body float-left m-2" do %>
+        <h5 class="card-title">Top Merchants by Revenue</h5>
+        <ul>
+          <% @top_three_merchants_by_revenue.each do |merchant| %>
+            <li><%= link_to merchant.name, merchant_path(merchant) %>: <%= number_to_currency(merchant.total) %></li>
+          <% end %>
+        </ul>
+      <% end %>
+      <%= tag.section id: "top-orders-by-items-shipped", class: "card-body float-left m-2" do %>
+        <h5 class="card-title">Top Orders by Items Shipped</h5>
+        <ul>
+          <% @top_orders_by_items_shipped.each do |result| %>
+            <li>Order <%= result.id %>: <%= pluralize(result.quantity, "item") %></li>
+          <% end %>
+        </ul>
+      <% end %>
     <% end %>
   <% end %>
-<% end %>
+</section>
+
+<section class="merchant-leaderboard-statistics">
+  <h1>Merchant Leaderboard</h1>
+  <%= tag.div class: "card" do %>
+    <%= tag.section class: "statistics card-body float-left m-4" do %>
+      <%= tag.section id: "top-ten-merchants-items-this-month", class: "card-body float-left m-2" do %>
+        <h5 class="card-title">Top Merchants by Items This Month</h5>
+        <% if !@top_ten_merchants_by_items_this_month.empty? %>
+          <ul>
+            <% @top_ten_merchants_by_items_this_month.each do |merchant| %>
+              <li><%= link_to merchant.name, merchant_path(merchant) %>: <%= pluralize(merchant.total_month_items, 'Item') %></li>
+            <% end %>
+          </ul>
+        <% else %>
+          <ul>
+            <li>N/A</li>
+          </ul>
+        <% end %>
+      <% end %>
+      <%= tag.section id: "top-ten-merchants-items-last-month", class: "card-body float-left m-2" do %>
+        <h5 class="card-title">Top Merchants by Items Last Month</h5>
+        <% if !@top_ten_merchants_by_items_last_month.empty? %>
+          <ul>
+            <% @top_ten_merchants_by_items_last_month.each do |merchant| %>
+              <li><%= link_to merchant.name, merchant_path(merchant) %>: <%= pluralize(merchant.total_month_items, 'Item') %></li>
+            <% end %>
+          </ul>
+        <% else %>
+          <ul>
+            <li>N/A</li>
+          </ul>
+        <% end %>
+      <% end %>
+      <%= tag.section id: "top-ten-merchants-noncancelled-this-month", class: "card-body float-left m-2" do %>
+        <h5 class="card-title">Top Merchants Who Fulfilled<br>Orders This Month</h5>
+        <% if !@top_ten_merchants_by_noncancelled_orders_this_month.empty? %>
+          <ul>
+            <% @top_ten_merchants_by_noncancelled_orders_this_month.each do |merchant| %>
+              <li><%= link_to merchant.name, merchant_path(merchant) %>: <%= number_to_currency(merchant.total_revenue) %> Fulfilled Value</li>
+            <% end %>
+          </ul>
+        <% else %>
+          <ul>
+            <li>N/A</li>
+          </ul>
+        <% end %>
+      <% end %>
+      <%= tag.section id: "top-ten-merchants-noncancelled-last-month", class: "card-body float-left m-2" do %>
+        <h5 class="card-title">Top Merchants Who Fulfilled <br>Orders Last Month</h5>
+        <% if !@top_ten_merchants_by_noncancelled_orders_last_month.empty? %>
+          <ul>
+            <% @top_ten_merchants_by_noncancelled_orders_last_month.each do |merchant| %>
+              <li><%= link_to merchant.name, merchant_path(merchant) %>: <%= number_to_currency(merchant.total_revenue) %> Fulfilled Value</li>
+            <% end %>
+          </ul>
+        <% else %>
+          <ul>
+            <li>N/A</li>
+          </ul>
+        <% end %>
+      <% end %>
+      <% if @user %>
+        <%= tag.section id: "top-five-merchants-fulfilled-fastest-state", class: "card-body float-left m-2" do %>
+          <h5 class="card-title">Top Merchants Who Fulfilled <br>Orders Fastest To My State<br>(<%= @user.state %>)</h5>
+          <% if !@top_five_merchants_by_fastest_fulfillment_state.empty? %>
+            <ul>
+              <% @top_five_merchants_by_fastest_fulfillment_state.each do |merchant| %>
+                <li><%= link_to merchant.name, merchant_path(merchant) %>: <%= time_as_words(merchant.avg_fulfillment_time) %></li>
+              <% end %>
+            </ul>
+          <% else %>
+            <ul>
+              <li>N/A</li>
+            </ul>
+          <% end %>
+        <% end %>
+        <%= tag.section id: "top-five-merchants-fulfilled-fastest-city", class: "card-body float-left m-2" do %>
+          <h5 class="card-title">Top Merchants Who Fulfilled <br>Orders Fastest To My City<br>(<%= @user.city %>, <%= @user.state %>)</h5>
+          <% if !@top_five_merchants_by_fastest_fulfillment_city.empty? %>
+            <ul>
+              <% @top_five_merchants_by_fastest_fulfillment_city.each do |merchant| %>
+                <li><%= link_to merchant.name, merchant_path(merchant) %>: <%= time_as_words(merchant.avg_fulfillment_time) %></li>
+              <% end %>
+            </ul>
+          <% else %>
+            <ul>
+              <li>N/A</li>
+            </ul>
+          <% end %>
+        <% end %>
+      <% end %>
+    <% end %>
+    <% end %>
+</section>
 
 <% @merchants.each do |merchant| %>
-  <%= tag.section id: "merchant-#{merchant.id}" do %>
-    <%= render partial: "merchant_card", locals: {merchant: merchant}%>
-  <% end %>
+  <section class="merchant-index-info"
+    <%= tag.section id: "merchant-#{merchant.id}" do %>
+      <%= render partial: "merchant_card", locals: {merchant: merchant}%>
+    <% end %>
+  </section>
 <% end %>

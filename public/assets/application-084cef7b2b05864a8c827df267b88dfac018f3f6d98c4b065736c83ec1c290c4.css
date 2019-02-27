@@ -7850,7 +7850,9 @@ button.bg-dark:focus {
 
 /* line 12, /Users/id/.rbenv/versions/2.4.5/lib/ruby/gems/2.4.0/gems/bootstrap-4.0.0/assets/stylesheets/bootstrap/utilities/_spacing.scss */
 .m-3 {
-  margin: 1rem !important;
+  margin-right: 1rem !important;
+  margin-bottom: 1rem !important;
+  margin-left: 1rem !important;
 }
 
 /* line 13, /Users/id/.rbenv/versions/2.4.5/lib/ruby/gems/2.4.0/gems/bootstrap-4.0.0/assets/stylesheets/bootstrap/utilities/_spacing.scss */

@@ -99,6 +99,172 @@ RSpec.describe User, type: :model do
         expect(User.top_user_cities_by_order_count(3)[2].order_count).to eq(1)
       end
     end
+
+    describe "advanced-statistics" do
+      before :each do
+        @u1 = create(:user, state: "CO", city: "Fairfield")
+        @u2 = create(:user, state: "IA", city: "Fairfield")
+        @u3 = create(:user, state: "OK", city: "OKC")
+        @u4 = create(:user, state: "IA", city: "Des Moines")
+        @m1, @m2, @m3, @m4, @m5, @m6, @m7, @m8, @m9, @m10, @m11, @m12, @m13, @m14, @m15, @m16 = create_list(:merchant, 16)
+        i1 = create(:item, merchant_id: @m1.id)
+        i2 = create(:item, merchant_id: @m2.id)
+        i3 = create(:item, merchant_id: @m3.id)
+        i4 = create(:item, merchant_id: @m4.id)
+        i5 = create(:item, merchant_id: @m5.id)
+        i6 = create(:item, merchant_id: @m6.id)
+        i7 = create(:item, merchant_id: @m7.id)
+        i8 = create(:item, merchant_id: @m8.id)
+        i9 = create(:item, merchant_id: @m9.id)
+        i10 = create(:item, merchant_id: @m10.id)
+        i11 = create(:item, merchant_id: @m11.id)
+        i12 = create(:item, merchant_id: @m12.id)
+        i13 = create(:item, merchant_id: @m13.id)
+        i14 = create(:item, merchant_id: @m14.id)
+        i15 = create(:item, merchant_id: @m15.id)
+        i16 = create(:item, merchant_id: @m16.id)
+        o1, o2, o3, o4, o5, o6 , o7, o8 = create_list(:completed_order, 8, user: @u1)
+        o9 = create(:order, user: @u1)
+        o10 = create(:cancelled_order, user: @u1)
+        o11 = create(:completed_order, user: @u2)
+        o12 = create(:completed_order, user: @u3)
+        o13 = create(:order, user: @u4)
+        o14 = create(:cancelled_order, user: @u2)
+        o15 = create(:cancelled_order, user: @u4)
+
+        #Order_items updated_at (fulfilled) current time (this month)
+        oi1 = create(:fulfilled_order_item, item: i4, order: o1, quantity: 1, created_at: 200.days.ago)
+        oi2 = create(:fulfilled_order_item, item: i2, order: o1, quantity: 1, price: 1, created_at: 200.days.ago)
+        oi3 = create(:fulfilled_order_item, item: i3, order: o1, quantity: 1, created_at: 200.days.ago)
+        oi4 = create(:fulfilled_order_item, item: i3, order: o2, quantity: 1, created_at: 200.days.ago)
+        oi5 = create(:fulfilled_order_item, item: i2, order: o2, quantity: 1, created_at: 200.days.ago)
+        oi6 = create(:fulfilled_order_item, item: i4, order: o3, quantity: 1, created_at: 200.days.ago)
+        oi7 = create(:fulfilled_order_item, item: i3, order: o4, quantity: 1, created_at: 200.days.ago)
+        oi8 = create(:fulfilled_order_item, item: i1, order: o5, quantity: 1, created_at: 200.days.ago)
+        oi9 = create(:fulfilled_order_item, item: i3, order: o6, quantity: 1, created_at: 200.days.ago)
+        oi10 = create(:fulfilled_order_item, item: i5, order: o6, quantity: 1, created_at: 200.days.ago)
+        #Item not fulfilled this or last month
+        oi11 = create(:fulfilled_order_item, item: i1, order: o7, created_at: 200.days.ago, updated_at: 2.months.ago, quantity: 5)
+        oi40 = create(:fulfilled_order_item, item: i1, order: o7, created_at: 400.days.ago, updated_at: 1.year.ago, quantity: 5)
+        #Item unfulfilled
+        oi12 = create(:order_item, item: i1, order: o8, created_at: 200.days.ago, quantity: 5)
+        oi13 = create(:order_item, item: i1, order: o8, created_at: 200.days.ago, updated_at: 1.month.ago, quantity: 5)
+        #Order pending
+        oi14 = create(:fulfilled_order_item, item: i11, order: o9, created_at: 200.days.ago, quantity: 5)
+        oi15 = create(:fulfilled_order_item, item: i11, order: o9, created_at: 200.days.ago, updated_at: 1.month.ago, quantity: 5)
+
+        #Order cancelled
+        oi16 = create(:fulfilled_order_item, item: i1, order: o10, created_at: 200.days.ago, quantity: 5)
+        oi17 = create(:fulfilled_order_item, item: i1, order: o10, created_at: 200.days.ago, updated_at: 1.month.ago, quantity: 5)
+
+        #Order_items updated_at (fulfilled) 1 month ago (last month)
+        oi18 = create(:fulfilled_order_item, item: i9, order: o1, quantity: 1, created_at: 200.days.ago, updated_at: 1.month.ago)
+        oi19 = create(:fulfilled_order_item, item: i7, order: o1, quantity: 1, price: 1, created_at: 200.days.ago, updated_at: 1.month.ago)
+        oi20 = create(:fulfilled_order_item, item: i8, order: o1, quantity: 1, created_at: 200.days.ago, updated_at: 1.month.ago)
+        oi21 = create(:fulfilled_order_item, item: i8, order: o2, quantity: 1, created_at: 200.days.ago, updated_at: 1.month.ago)
+        oi22 = create(:fulfilled_order_item, item: i7, order: o2, quantity: 1, created_at: 200.days.ago, updated_at: 1.month.ago)
+        oi23 = create(:fulfilled_order_item, item: i9, order: o3, quantity: 1, created_at: 200.days.ago, updated_at: 1.month.ago)
+        oi24 = create(:fulfilled_order_item, item: i8, order: o4, quantity: 1, created_at: 200.days.ago, updated_at: 1.month.ago)
+        oi25 = create(:fulfilled_order_item, item: i6, order: o5, quantity: 1, created_at: 200.days.ago, updated_at: 1.month.ago)
+        oi26 = create(:fulfilled_order_item, item: i8, order: o6, quantity: 1, created_at: 200.days.ago, updated_at: 1.month.ago)
+        oi27 = create(:fulfilled_order_item, item: i10, order: o6, quantity: 1, created_at: 200.days.ago, updated_at: 1.month.ago)
+
+        #Order_items updated not in last 2 months and by users in different states/cities
+        oi28 = create(:fulfilled_order_item, item: i11, order: o11, quantity: 1, created_at: 260.days.ago, updated_at: 100.days.ago)
+        oi29 = create(:fulfilled_order_item, item: i12, order: o11, quantity: 1, created_at: 250.days.ago, updated_at: 100.days.ago)
+        oi30 = create(:fulfilled_order_item, item: i13, order: o12, quantity: 1, created_at: 240.days.ago, updated_at: 100.days.ago)
+        oi31 = create(:fulfilled_order_item, item: i14, order: o12, quantity: 1, created_at: 230.days.ago, updated_at: 100.days.ago)
+        oi32 = create(:fulfilled_order_item, item: i15, order: o13, quantity: 1, created_at: 220.days.ago, updated_at: 100.days.ago)
+        oi33 = create(:fulfilled_order_item, item: i16, order: o13, quantity: 1, created_at: 210.days.ago, updated_at: 100.days.ago)
+        oi34 = create(:fulfilled_order_item, item: i1, order: o11, quantity: 1, created_at: 200.days.ago, updated_at: 100.days.ago)
+        oi35 = create(:fulfilled_order_item, item: i2, order: o11, quantity: 1, created_at: 190.days.ago, updated_at: 100.days.ago)
+        oi36 = create(:fulfilled_order_item, item: i3, order: o11, quantity: 1, created_at: 180.days.ago, updated_at: 100.days.ago)
+        #Order_item by same merchant, another state
+        oi37 = create(:fulfilled_order_item, item: i16, order: o1, quantity: 1, created_at: 110.days.ago, updated_at: 100.days.ago)
+        #Order_item by same merchant, same state, cancelled order
+        oi38 = create(:fulfilled_order_item, item: i16, order: o14, quantity: 1, created_at: 110.days.ago, updated_at: 100.days.ago)
+        oi39 = create(:fulfilled_order_item, item: i16, order: o15, quantity: 1, created_at: 110.days.ago, updated_at: 100.days.ago)
+      end
+
+      #Month = current month(default)
+      it ".merchants_sorted_by_month_items(current)" do
+        expect(User.merchants_sorted_by_month_items).to eq([@m3, @m2, @m4, @m1, @m5])
+      end
+
+      it ".top_3_merchants_by_month_items(current)" do
+        expect(User.top_merchants_by_month_items(3)).to eq([@m3, @m2, @m4])
+      end
+
+      it ".merchants_sorted_by_fulfilled_orders(current)" do
+        expect(User.merchants_sorted_by_fulfilled_orders).to eq([@m11, @m3, @m5, @m1, @m4, @m2])
+      end
+
+      it ".top_3_merchants_by_fulfilled_orders(current)" do
+        expect(User.top_merchants_by_fulfilled_orders(3)).to eq([@m11, @m3, @m5])
+      end
+
+      #Month = next month
+      it ".merchants_sorted_by_month_items(last)" do
+        expect(User.merchants_sorted_by_month_items(Time.now.month - 1)).to eq([@m8, @m7, @m9, @m6, @m10])
+      end
+
+      it ".top_3_merchants_by_month_items(last)" do
+        expect(User.top_merchants_by_month_items(3, Time.now.month - 1)).to eq([@m8, @m7, @m9])
+      end
+
+      it ".merchants_sorted_by_fulfilled_orders(last)" do
+        merchants= User.merchants_sorted_by_fulfilled_orders(1.month.ago.month)
+
+        expect(merchants).to eq([@m8, @m11, @m9, @m10, @m6, @m7])
+        expect(merchants[0].total_revenue).to eq(136.5)
+        expect(merchants[1].total_revenue).to eq(120)
+        expect(merchants[2].total_revenue).to eq(63)
+        expect(merchants[3].total_revenue).to eq(40.5)
+        expect(merchants[4].total_revenue).to eq(37.5)
+        expect(merchants[5].total_revenue).to eq(34)
+      end
+
+      it ".top_3_merchants_by_fulfilled_orders(last)" do
+        merchants = User.top_merchants_by_fulfilled_orders(3, 1.month.ago.month)
+
+        expect(merchants).to eq([@m8, @m11, @m9])
+      end
+
+      #Fastest by user state
+      it ".merchants_sorted_by_fulfilled_orders_fastest_state()" do
+        user_2 = @u2
+        user_3 = @u3
+        user_4 = @u4
+
+        expect(User.merchants_sorted_by_fulfilled_orders_fastest_state(user_2)).to eq([@m3, @m2, @m1, @m16, @m15, @m12, @m11])
+        expect(User.merchants_sorted_by_fulfilled_orders_fastest_state(user_3)).to eq([@m14, @m13])
+        expect(User.merchants_sorted_by_fulfilled_orders_fastest_state(user_4)).to eq([@m3, @m2, @m1, @m16, @m15, @m12, @m11])
+      end
+
+      it ".top_3_merchants_by_fulfilled_orders_fastest_state()" do
+        user_2 = @u2
+
+        expect(User.top_merchants_by_fulfilled_orders_fastest_state(user_2, 3)).to eq([@m3, @m2, @m1])
+      end
+
+      #Fastest by user city
+      it ".merchants_sorted_by_fulfilled_orders_fastest_city()" do
+        user_2 = @u2
+        user_3 = @u3
+        user_4 = @u4
+
+        expect(User.merchants_sorted_by_fulfilled_orders_fastest_city(user_2)).to eq([@m3, @m2, @m1, @m12, @m11])
+        expect(User.merchants_sorted_by_fulfilled_orders_fastest_city(user_3)).to eq([@m14, @m13])
+        expect(User.merchants_sorted_by_fulfilled_orders_fastest_city(user_4)).to eq([@m16, @m15])
+      end
+
+      it ".top_3_merchants_by_fulfilled_orders_fastest_city()" do
+        user_2 = @u2
+
+        expect(User.top_merchants_by_fulfilled_orders_fastest_city(user_2, 3)).to eq([@m3, @m2, @m1])
+      end
+
+    end
   end
 
   describe 'instance methods' do
