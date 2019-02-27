@@ -68,8 +68,9 @@ RSpec.describe Item, type: :model do
 
       create(:order_item, order: order1, item: item1, quantity: 7, price: 2)
       create(:order_item, order: order2, item: item1, quantity: 6, price: 2)
+      create(:order_item, order: order1, item: item2, quantity: 3, price: 2)
       create(:order_item, order: order2, item: item2, quantity: 4, price: 2)
-      create(:order_item, order: order3, item: item2, quantity: 8, price: 2)
+      create(:order_item, order: order3, item: item2, quantity: 5, price: 2)
       create(:order_item, order: order3, item: item3, quantity: 9, price: 2)
       #Should only factor previosly unfulfilled order items
       create(:fulfilled_order_item, order: order1, item: item3, quantity: 3, price: 2)
@@ -88,10 +89,12 @@ RSpec.describe Item, type: :model do
 
       expect(low_items1).to eq([item1, item2])
       expect(low_items2).to eq([])
-      expect(low_items1[0].total_quantity).to eq(13)
+      expect(low_items1[0].item_quantity).to eq(13)
       expect(low_items1[0].total_value).to eq(26)
-      expect(low_items1[1].total_quantity).to eq(12)
+      expect(low_items1[0].order_quantity).to eq(2)
+      expect(low_items1[1].item_quantity).to eq(12)
       expect(low_items1[1].total_value).to eq(24)
+      expect(low_items1[1].order_quantity).to eq(3)
     end
   end
 

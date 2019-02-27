@@ -51,4 +51,13 @@ class Item < ApplicationRecord
   def self.default_picture_items
     self.where(image: 'https://picsum.photos/200/300/?image=524')
   end
+
+  def self.low_inventory_items
+    self.joins(:orders)
+        .select('items.*, sum(order_items.quantity * order_items.price) as total_value, sum(order_items.quantity) as item_quantity, count(orders.id) as order_quantity')
+        .where(orders: {status: :pending})
+        .where(order_items: {fulfilled: false})
+        .group(:id)
+        .having('sum(order_items.quantity) > inventory')
+  end
 end
