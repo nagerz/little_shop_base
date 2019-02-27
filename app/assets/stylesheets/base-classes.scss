@@ -21,8 +21,17 @@
 }
 
 .merchant-statistics .m-2 {
-  height: 30vh !important;
+  height: 20vh !important;
   width: 35vw !important;
+}
+
+.merchant-leaderboard-statistics .m-2 {
+  height: 35vh !important;
+  width: 35vw !important;
+}
+
+.merchant-leaderboard-statistics h1 {
+  margin-top: 10px;
 }
 
 .dashboard-info .m-3 {
@@ -30,6 +39,25 @@
   margin-right: 1rem !important;
   margin-bottom: 1rem !important;
   margin-left: 1rem !important;
+}
+
+.dashboard-statistics .m-2{
+  height: 15vh !important;
+}
+
+.dashboard-statistics .statistics{
+  margin-top: 10px !important;
+  margin-top: 0px !important;
+  margin-left: 0px !important;
+  padding-left: 0px !important;
+  padding-bottom: 0px !important;
+}
+
+.dashboard-statistics .card-body{
+  padding-top: 0px !important;
+}
+
+.sale_items{
 }
 
 .merchant-index-info .merchant-card {

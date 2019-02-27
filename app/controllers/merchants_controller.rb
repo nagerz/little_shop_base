@@ -7,7 +7,7 @@ class MerchantsController < ApplicationController
     else
       @merchants = User.active_merchants
     end
-    if current_user
+    if current_reguser?
       @user = current_user
       @top_five_merchants_by_fastest_fulfillment_state = @merchants.top_merchants_by_fulfilled_orders_fastest_state(@user, 5)
       @top_five_merchants_by_fastest_fulfillment_city = @merchants.top_merchants_by_fulfilled_orders_fastest_city(@user, 5)

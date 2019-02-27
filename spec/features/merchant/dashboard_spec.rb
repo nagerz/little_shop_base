@@ -210,6 +210,26 @@ RSpec.describe 'merchant dashboard' do
           end
         end
 
+        it 'item name is a link to item show page' do
+          click_link("Log out")
+          login_as(@merchant2)
+
+          within ".low-inventory-item-#{@i3.id}" do
+            click_link(@i3.name)
+            expect(current_path).to eq(item_path(@i3))
+          end
+        end
+
+        it 'Restocked is a link to item edit page' do
+          click_link("Log out")
+          login_as(@merchant2)
+
+          within ".low-inventory-item-#{@i3.id}" do
+            click_link("Restocked")
+            expect(current_path).to eq(edit_dashboard_item_path(@i3))
+          end
+        end
+
         it 'doesnt show up if no order items exceeding inventory' do
           click_link("Log out")
           login_as(@merchant3)

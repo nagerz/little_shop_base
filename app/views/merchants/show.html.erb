@@ -35,7 +35,7 @@
 
       <section class="default-picture-items">
         <% unless @default_picture_items.nil? || @default_picture_items.empty? %>
-          <h5 class="card-title"><span style='font-size:16px;'>&#9654;</span> Items Needing an Updated Picture: </h5>
+          <h5 class="card-title"><span style='font-size:12px;'>&#9654;</span> Items Needing an Updated Picture: </h5>
           <ul>
             <% @default_picture_items.each do |item| %>
               <li><%= link_to item.name, edit_dashboard_item_path(item) %></li>
@@ -47,17 +47,19 @@
       <section class="unfulfilled-items-worth">
         <% unless @pending_orders.nil? || @pending_orders.empty? %>
         <br>
-          <h5 class="card-title"><span style='font-size:16px;'>&#9654;</span> You have <%= pluralize(@unfulfilled_orders_count, "order") %> requiring attention worth <%= number_to_currency(@unfulfilled_orders_value) %> </h5>
+          <h5 class="card-title"><span style='font-size:12px;'>&#9654;</span> You have <%= pluralize(@unfulfilled_orders_count, "order") %> requiring attention worth <%= number_to_currency(@unfulfilled_orders_value) %> </h5>
         <% end %>
       </section>
 
       <section class="low-item-inventory">
         <% unless @low_inventory_items.nil? || @low_inventory_items.empty? %>
         <br>
-          <h5 class="card-title"><span style='font-size:16px;'>&#9654;</span> Not enough inventory to meet demand for these items: </h5>
+          <h5 class="card-title"><span style='font-size:12px;'>&#9654;</span> Not enough inventory to meet demand for these items: </h5>
           <ul>
             <% @low_inventory_items.each do |item| %>
-              <li><%= link_to item.name, item_path(item) %>: (<%= item.item_quantity %> ordered across <%= pluralize(item.order_quantity, "order") %> worth <%= number_to_currency(item.total_value) %>) <br><%= link_to "Restocked?", edit_dashboard_item_path(item) %></li>
+              <article class="low-inventory-item-<%= item.id %>">
+                <li><%= link_to item.name, item_path(item) %>: (<%= item.item_quantity %> ordered across <%= pluralize(item.order_quantity, "order") %> worth <%= number_to_currency(item.total_value) %>) <br><%= link_to "Restocked?", edit_dashboard_item_path(item) %></li>
+              </article>
             <% end %>
           </ul>
         <% end %>
@@ -67,64 +69,66 @@
   </div>
 </section>
 
-<%= tag.div class: "card" do %>
-  <%= tag.section class: "statistics card-body float-left m-4" do %>
-    <%= tag.section id: "top-items-sold-by-quantity", class: "card-body float-left m-2" do %>
-      <h5 class="card-title">Top Items Sold by Quantity</h5>
-      <ul>
-        <% @merchant.top_items_sold_by_quantity(5).each do |item| %>
-          <li><%= link_to item.name, dashboard_item_path(item) %>: <%= item.quantity %></li>
-        <% end %>
-      </ul>
-    <% end %>
-    <%= tag.section id: "percent-of-items-sold", class: "card-body float-left m-2" do %>
-      <h5 class="card-title">Sold Items Percentage</h5>
-        <p> You have sold <%= pluralize(@merchant.total_items_sold, 'item') %>, <%= number_to_percentage(@merchant.percent_of_items_sold, precision: 2) %> of your total inventory</p>
-    <% end %>
-    <%= tag.section id: "top-states-by-items-shipped", class: "card-body float-left m-2" do %>
-      <h5 class="card-title">Top States by Items Shipped</h5>
-      <ul>
-        <% @merchant.top_states_by_items_shipped(3).each do |item| %>
-          <li><%= item.state %>: <%= item.quantity %></li>
-        <% end %>
-      </ul>
-    <% end %>
-    <%= tag.section id: "top-cities-by-items-shipped", class: "card-body float-left m-2" do %>
-      <h5 class="card-title">Top Cities by Items Shipped</h5>
-      <ul>
-        <% @merchant.top_cities_by_items_shipped(3).each do |item| %>
-          <li><%= item.city %>, <%= item.state %>: <%= item.quantity %></li>
-        <% end %>
-      </ul>
-    <% end %>
-    <%= tag.section id: "top-users-by-money-spent", class: "card-body float-left m-2" do %>
-      <h5 class="card-title">Top Users by Money Spent</h5>
-      <ul>
-        <% @merchant.top_users_by_money_spent(3).each do |user| %>
-          <li><%= user.name %>: <%= number_to_currency(user.total) %></li>
-        <% end %>
-      </ul>
-    <% end %>
-    <%= tag.section id: "top-user-by-order-count", class: "card-body float-left m-2" do %>
-      <h5 class="card-title">Top User by Order Count</h5>
-      <% if @merchant.top_user_by_order_count %>
-        <p><%= @merchant.top_user_by_order_count.name %>: <%= pluralize(@merchant.top_user_by_order_count.count, 'order') %></p>
-      <% else %>
-        <p>N/A</p>
+<section class="dashboard-statistics">
+  <%= tag.div class: "card" do %>
+    <%= tag.section class: "statistics float-left card-body m-4" do %>
+      <%= tag.section id: "top-items-sold-by-quantity", class: "card-body float-left m-2" do %>
+        <h5 class="card-title">Top Items Sold by Quantity</h5>
+        <ul>
+          <% @merchant.top_items_sold_by_quantity(5).each do |item| %>
+            <li><%= link_to item.name, dashboard_item_path(item) %>: <%= item.quantity %></li>
+          <% end %>
+        </ul>
       <% end %>
-    <% end %>
-    <%= tag.section id: "top-user-by-item-count", class: "card-body float-left m-2" do %>
-      <h5 class="card-title">Top User by Item Count</h5>
-      <% if @merchant.top_user_by_item_count %>
-        <p><%= @merchant.top_user_by_item_count.name %>: <%= pluralize(@merchant.top_user_by_item_count.quantity, 'item') %></p>
-      <% else %>
-        <p>N/A</p>
+      <%= tag.section id: "percent-of-items-sold", class: "card-body float-left m-2" do %>
+        <h5 class="card-title">Sold Items Percentage</h5>
+          <p> You have sold <%= pluralize(@merchant.total_items_sold, 'item') %>, <%= number_to_percentage(@merchant.percent_of_items_sold, precision: 2) %> of your total inventory</p>
+      <% end %>
+      <%= tag.section id: "top-states-by-items-shipped", class: "card-body float-left m-2" do %>
+        <h5 class="card-title">Top States by Items Shipped</h5>
+        <ul>
+          <% @merchant.top_states_by_items_shipped(3).each do |item| %>
+            <li><%= item.state %>: <%= item.quantity %></li>
+          <% end %>
+        </ul>
+      <% end %>
+      <%= tag.section id: "top-cities-by-items-shipped", class: "card-body float-left m-2" do %>
+        <h5 class="card-title">Top Cities by Items Shipped</h5>
+        <ul>
+          <% @merchant.top_cities_by_items_shipped(3).each do |item| %>
+            <li><%= item.city %>, <%= item.state %>: <%= item.quantity %></li>
+          <% end %>
+        </ul>
+      <% end %>
+      <%= tag.section id: "top-users-by-money-spent", class: "card-body float-left m-2" do %>
+        <h5 class="card-title">Top Users by Money Spent</h5>
+        <ul>
+          <% @merchant.top_users_by_money_spent(3).each do |user| %>
+            <li><%= user.name %>: <%= number_to_currency(user.total) %></li>
+          <% end %>
+        </ul>
+      <% end %>
+      <%= tag.section id: "top-user-by-order-count", class: "card-body float-left m-2" do %>
+        <h5 class="card-title">Top User by Order Count</h5>
+        <% if @merchant.top_user_by_order_count %>
+          <p><%= @merchant.top_user_by_order_count.name %>: <%= pluralize(@merchant.top_user_by_order_count.count, 'order') %></p>
+        <% else %>
+          <p>N/A</p>
+        <% end %>
+      <% end %>
+      <%= tag.section id: "top-user-by-item-count", class: "card-body float-left m-2" do %>
+        <h5 class="card-title">Top User by Item Count</h5>
+        <% if @merchant.top_user_by_item_count %>
+          <p><%= @merchant.top_user_by_item_count.name %>: <%= pluralize(@merchant.top_user_by_item_count.quantity, 'item') %></p>
+        <% else %>
+          <p>N/A</p>
+        <% end %>
       <% end %>
     <% end %>
   <% end %>
-<% end %>
+</section>
 
-<section>
+<section class="sale-items">
   <p>
   <% if current_user == @merchant %>
   <%= link_to 'Items for Sale', dashboard_items_path %>
@@ -154,9 +158,11 @@
             <td><%= order.total_quantity_for_merchant(@merchant.id) %></td>
             <td><%= order.total_price_for_merchant(@merchant.id) %></td>
             <article class="order-notes">
-              <% unless order.high_quantity_order_items(@merchant.id).empty? %>
+              <% if order.high_quantity_order_items(@merchant.id).empty? %>
+                <td></td>
+              <% else %>
                 <td>
-                  <span>&#9888;</span> Inventory Shortage
+                  <font color="red">&#9888; Inventory Shortage </font>
                 </td>
               <% end %>
             </article>
